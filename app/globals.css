@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 100% 3%; /* #00080D */
+    --foreground: 0 0% 96%; /* #F5F5F5 */
+    
+    --card: 203 74% 8%; /* #041A27 with transparency */
+    --card-foreground: 0 0% 96%; /* #F5F5F5 */
+    
+    --popover: 203 74% 8%; /* #041A27 */
+    --popover-foreground: 0 0% 96%; /* #F5F5F5 */
+    
+    --primary: 255 47% 56%; /* #7357C6 */
+    --primary-foreground: 0 0% 96%; /* #F5F5F5 */
+    
+    --secondary: 176 69% 54%; /* #3DD6D1 */
+    --secondary-foreground: 210 100% 3%; /* #00080D */
+    
+    --muted: 249 6% 84%; /* #D5D3DA */
+    --muted-foreground: 249 6% 65%;
+    
+    --accent: 203 74% 12%; /* #041A27 slightly lighter */
+    --accent-foreground: 0 0% 96%; /* #F5F5F5 */
+    
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 96%; /* #F5F5F5 */
+    
+    --border: 203 74% 15%; /* #041A27 slightly lighter */
+    --input: 203 74% 15%; /* #041A27 slightly lighter */
+    --ring: 255 47% 56%; /* #7357C6 */
+    
+    --radius: 0.75rem;
+    
+    --glow-color: rgba(115, 87, 198, 0.5);
+  }
+  
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-richBlack text-whiteSmoke;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-comfortaa font-bold;
+  }
+  
+  p, a, li, span, div {
+    @apply font-questrial;
+  }
+}
+
+@layer components {
+  .glassmorphism {
+    @apply bg-berkeleyBlue bg-opacity-30 backdrop-blur-md border border-slateBlue border-opacity-20 shadow-md;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-glow hover:border-slateBlue hover:border-opacity-60 hover:-translate-y-1;
+  }
+  
+  .button-primary {
+    @apply px-6 py-2 rounded-xl font-comfortaa font-bold bg-gradient-to-r from-slateBlue to-robinEggBlue text-whiteSmoke shadow-glow transition-all duration-300 hover:shadow-lg hover:scale-105;
+  }
+  
+  .button-secondary {
+    @apply px-6 py-2 rounded-xl font-comfortaa font-bold border-2 border-slateBlue text-whiteSmoke transition-all duration-300 hover:bg-slateBlue hover:bg-opacity-20 hover:shadow-glow;
+  }
+  
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-slateBlue to-robinEggBlue;
+  }
+}
+
+/* Particle Animation */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  animation-name: float, fadeIn, fadeOut;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  background: radial-gradient(circle at center, var(--particle-color) 0%, transparent 70%);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-richBlack;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-berkeleyBlue rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slateBlue bg-opacity-50;
+}
