@@ -4,6 +4,8 @@ import {
   generateProjectName, 
   generateFileContents,
   generateZipFile,
+  saveZipFile,
+  generatePreviewFiles,
   ProjectDetails,
   FileContent
 } from './ai-service';
@@ -59,7 +61,7 @@ export class ProjectService {
         .update({ status: 'generating' })
         .eq('id', projectId);
       
-      // Generate project details
+      // 1. Generate project details
       const projectDetails = await generateProjectDetails(prompt);
       
       // Update project with initial details
@@ -69,16 +71,17 @@ export class ProjectService {
           name: projectDetails.name,
           description: projectDetails.description,
           tech_stack: projectDetails.techStack,
+          structure: projectDetails.structure,
         })
         .eq('id', projectId);
       
-      // Generate file contents
+      // 2. Generate file contents
       const fileContents = await generateFileContents(prompt, projectDetails);
       
-      // Generate zip file
+      // 3. Generate zip file
       const zipBlob = await generateZipFile(projectDetails.name, fileContents);
       
-      // Store the file in Supabase Storage
+      // 4. Store the file in Supabase Storage
       const timestamp = Date.now();
       const filePath = `project-zips/${projectId}/${timestamp}-${projectDetails.name.toLowerCase().replace(/\s+/g, '-')}.zip`;
       
@@ -91,17 +94,18 @@ export class ProjectService {
         
       if (uploadError) throw uploadError;
       
-      // Generate the public URL for the file
+      // 5. Generate the public URL for the file
       const { data: publicUrl } = supabase.storage
         .from('project-files')
         .getPublicUrl(filePath);
       
-      // Update project with completed status and download URL
+      // 6. Update project with completed status and download URL
       await supabase
         .from('projects')
         .update({
           status: 'completed',
           download_url: publicUrl.publicUrl,
+          files: fileContents.map(f => f.path),
         })
         .eq('id', projectId);
       
@@ -118,9 +122,9 @@ export class ProjectService {
 
   async getUserProjects(): Promise<Project[]> {
     try {
-      const { data: session, error: sessionError } = await supabase.auth.getSession();
+      const { data: session } = await supabase.auth.getSession();
       
-      if (sessionError || !session.session) {
+      if (!session.session) {
         throw new Error('Authentication required');
       }
       
@@ -137,6 +141,23 @@ export class ProjectService {
       return data || [];
     } catch (error) {
       console.error('Error fetching projects:', error);
+      return [];
+    }
+  }
+
+  static async getProjectsByUserId(userId: string): Promise<Project[]> {
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
+      
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching projects by user ID:', error);
       return [];
     }
   }
@@ -178,6 +199,22 @@ export class ProjectService {
 
   async deleteProject(projectId: string): Promise<boolean> {
     try {
+      // Delete files from storage first
+      const folderPath = `project-zips/${projectId}`;
+      
+      // List all files in the project folder
+      const { data: files } = await supabase.storage
+        .from('project-files')
+        .list(folderPath);
+      
+      if (files && files.length > 0) {
+        // Delete each file
+        const filePaths = files.map(file => `${folderPath}/${file.name}`);
+        await supabase.storage
+          .from('project-files')
+          .remove(filePaths);
+      }
+      
       // Delete the project from database
       const { error } = await supabase
         .from('projects')
@@ -214,4 +251,52 @@ export class ProjectService {
       return false;
     }
   }
+
+  async getProjectFiles(projectId: string): Promise<FileContent[]> {
+    try {
+      const project = await this.getProjectById(projectId);
+      
+      if (!project) {
+        throw new Error('Project not found');
+      }
+      
+      if (project.status !== 'completed') {
+        // Return empty array if project generation is not completed
+        return [];
+      }
+      
+      // If we had actual file storage, we would fetch the files here
+      // For now, generate preview files based on project details
+      return generatePreviewFiles({
+        name: project.name,
+        description: project.description,
+        techStack: project.tech_stack as any,
+        files: project.files as any || [],
+        structure: project.structure as any || []
+      });
+      
+    } catch (error) {
+      console.error('Error getting project files:', error);
+      return [];
+    }
+  }
+
+  async incrementUserGenerationCount(userId: string): Promise<boolean> {
+    try {
+      const { error } = await supabase.rpc('increment_generation_count', {
+        user_id: userId
+      });
+      
+      if (error) throw error;
+      
+      return true;
+    } catch (error) {
+      console.error('Error incrementing generation count:', error);
+      return false;
+    }
+  }
+}
+
+export async function getProjectsByUserId(userId: string): Promise<Project[]> {
+  return ProjectService.getProjectsByUserId(userId);
 }

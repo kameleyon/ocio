@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
 import Link from 'next/link'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Code, Terminal } from 'lucide-react'
 
 const navLinks = [
   { name: 'Features', href: '#features' },
@@ -33,22 +33,23 @@ export default function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-richBlack/70 backdrop-blur-lg shadow-md'
+          ? 'bg-richBlack/40 backdrop-blur-md border-b border-slateBlue/10'
           : 'bg-transparent'
       }`}
     >
       <Container>
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-20 items-center justify-between">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
+              <Terminal size={24} className="mr-2 text-robinEggBlue" />
               <span className="text-2xl font-bold text-whiteSmoke font-comfortaa">
-                OptimusCode<span className="text-slateBlue">.</span>io
+                Optimus<span className="text-slateBlue">Code</span><span className="text-robinEggBlue">.</span>io
               </span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-10">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
@@ -62,7 +63,7 @@ export default function Navbar() {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="outline" size="default" asChild>
+            <Button variant="outline" size="default" asChild className="border-slateBlue/70 hover:border-slateBlue">
               <Link href="/login">Log In</Link>
             </Button>
             <Button variant="gradient" size="default" asChild>
@@ -74,7 +75,7 @@ export default function Navbar() {
           <div className="flex md:hidden">
             <button
               type="button"
-              className="text-whiteSmoke"
+              className="text-whiteSmoke p-2 rounded-lg hover:bg-berkleeyBlue/30"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               {mobileMenuOpen ? (
@@ -89,7 +90,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-berkeleyBlue/95 backdrop-blur-lg">
+        <div className="md:hidden glassmorphism backdrop-blur-lg border-b border-slateBlue/20">
           <Container className="py-4">
             <nav className="flex flex-col space-y-4">
               {navLinks.map((link) => (

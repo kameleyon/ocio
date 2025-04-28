@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Container } from '@/components/ui/container'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Terminal } from 'lucide-react'
 import Link from 'next/link'
 
 export default function HeroSection() {
@@ -53,16 +53,15 @@ export default function HeroSection() {
   }
 
   return (
-    <section className="pt-32 pb-20 relative">
-      {/* More particles in hero section */}
+    <section className="pt-32 pb-24 relative overflow-hidden">
+      {/* Hero section particle concentration area - visual only */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {/* This is just a visual indicator that more particles should be here */}
-        {/* The actual particles are handled by the ParticleBackground component */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-full h-96 opacity-30 blur-xl bg-gradient-to-b from-slateBlue/20 to-transparent rounded-full" />
       </div>
       
       <Container className="relative z-10">
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-slateBlue to-robinEggBlue text-transparent bg-clip-text">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-slateBlue to-robinEggBlue text-transparent bg-clip-text leading-tight">
             Turn Plain Text Into Production-Ready Apps
           </h1>
           
@@ -70,7 +69,11 @@ export default function HeroSection() {
             No templates. No boilerplate. Just full-stack code, zipped and ready.
           </p>
           
-          <div className="mb-8 relative">
+          <div className="mb-8 relative glassmorphism rounded-xl p-2 mx-auto max-w-2xl">
+            <div className="flex items-center mb-2 pl-3 text-xs text-lightGray">
+              <Terminal size={12} className="mr-2 text-robinEggBlue" />
+              <span>optimuscode.io</span>
+            </div>
             <Input
               ref={promptRef}
               type="text"
@@ -78,10 +81,10 @@ export default function HeroSection() {
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               onFocus={handleFocus}
-              className="h-14 px-5 text-xl shadow-md border-slateBlue"
+              className="h-14 px-5 text-lg bg-richBlack/50 border-slateBlue/30 shadow-inner"
               containerClassName="mb-2"
             />
-            <span className="absolute right-5 top-4 text-2xl text-slateBlue animate-pulse">
+            <span className="absolute right-7 top-11 text-2xl text-slateBlue">
               {cursorVisible ? '|' : ''}
             </span>
           </div>
@@ -102,6 +105,20 @@ export default function HeroSection() {
           </div>
         </div>
       </Container>
+      
+      {/* Decorative code elements - positioned absolutely */}
+      <div className="hidden md:block absolute left-10 top-40 transform -rotate-12 opacity-20 glassmorphism p-4 rounded-lg text-robinEggBlue text-xs font-mono">
+        <pre>{`const app = optimusCode.generate({
+  type: "task-manager",
+  features: ["auth", "kanban"],
+  techStack: "react-node-supabase"
+});`}</pre>
+      </div>
+      
+      <div className="hidden md:block absolute right-10 bottom-20 transform rotate-6 opacity-20 glassmorphism p-4 rounded-lg text-slateBlue text-xs font-mono">
+        <pre>{`// Generated in 45 seconds
+downloadZip("task-flow-app.zip");`}</pre>
+      </div>
     </section>
   )
 }
