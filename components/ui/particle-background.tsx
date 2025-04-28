@@ -45,8 +45,8 @@ export function ParticleBackground() {
     function createParticle() {
       const size = Math.random() * 2 + 1 // Size between 1-3px
       particles.push({
-        x: Math.random() * canvas.width,
-        y: canvas.height + size, // Start below the screen
+        x: Math.random() * canvas!.width,
+        y: canvas!.height + size, // Start below the screen
         size,
         color: colors[Math.floor(Math.random() * colors.length)],
         speed: Math.random() * 1 + 0.2, // Speed between 0.2-1.2
@@ -57,7 +57,7 @@ export function ParticleBackground() {
     }
 
     function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx!.clearRect(0, 0, canvas!.width, canvas!.height)
       
       // Update and draw particles
       for (let i = 0; i < particles.length; i++) {
@@ -77,12 +77,12 @@ export function ParticleBackground() {
         p.y -= p.speed
         
         // Draw particle
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-        ctx.fillStyle = p.color
-        ctx.globalAlpha = p.opacity
-        ctx.fill()
-        ctx.globalAlpha = 1
+        ctx!.beginPath()
+        ctx!.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+        ctx!.fillStyle = p.color
+        ctx!.globalAlpha = p.opacity
+        ctx!.fill()
+        ctx!.globalAlpha = 1
         
         // If particle is done, reset it
         if (p.life >= p.maxLife) {

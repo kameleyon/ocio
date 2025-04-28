@@ -20,6 +20,8 @@ export interface Database {
           status: "pending" | "generating" | "completed" | "failed"
           tech_stack: Json
           download_url: string | null
+          structure?: Json
+          files?: Json
         }
         Insert: {
           id?: string
@@ -31,6 +33,8 @@ export interface Database {
           status?: "pending" | "generating" | "completed" | "failed"
           tech_stack?: Json
           download_url?: string | null
+          structure?: Json
+          files?: Json
         }
         Update: {
           id?: string
@@ -42,6 +46,8 @@ export interface Database {
           status?: "pending" | "generating" | "completed" | "failed"
           tech_stack?: Json
           download_url?: string | null
+          structure?: Json
+          files?: Json
         }
       }
       profiles: {

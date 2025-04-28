@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Comfortaa, Questrial } from 'next/font/google'
 import { ParticleBackground } from '@/components/ui/particle-background'
+import { AuthProvider } from '@/contexts/auth-context'
 
 const comfortaa = Comfortaa({ 
   subsets: ['latin'],
@@ -30,7 +31,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${comfortaa.variable} ${questrial.variable}`}>
         <ParticleBackground />
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )

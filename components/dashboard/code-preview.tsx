@@ -101,7 +101,7 @@ export default function CodePreview({
     
     // Function to determine the indentation level based on pipe characters
     const getIndentationLevel = (line: string) => {
-      const match = line.match(/^(│\s+)*├──\s+/ || line.match(/^(│\s+)*└──\s+/))
+      const match = line.match(/^(│\s+)*├──\s+/) || line.match(/^(│\s+)*└──\s+/)
       return match ? match[0].length / 4 : 0 // Assuming each level is 4 chars (│   )
     }
 
@@ -115,7 +115,7 @@ export default function CodePreview({
     const isFolder = (line: string) => line.includes('📁')
     
     // Generate file tree structure
-    const structure = projectDetails.structure.map((line, index) => {
+    const structure = projectDetails.structure.map((line: string, index: number) => {
       const name = getName(line)
       const level = index === 0 ? 0 : getIndentationLevel(line)
       const isDir = isFolder(line)

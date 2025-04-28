@@ -4,6 +4,8 @@ const nextConfig = {
   images: {
     domains: ['cfovctpyutyvyqzvypwx.supabase.co'],
   },
+  // Disable prerendering
+  output: "standalone"
 }
 
 module.exports = nextConfig

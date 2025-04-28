@@ -219,7 +219,7 @@ export default function BuildPage() {
           <CodePreview 
             status={status}
             projectDetails={projectDetails || undefined}
-            downloadUrl={project?.download_url}
+            downloadUrl={project?.download_url || undefined}
             onRegenerate={handleRegenerate}
             onDownload={handleDownload}
           />

@@ -11,7 +11,7 @@ export interface ProjectDetails {
     deployment: string
   }
   files: string[]
-  structure: string[]
+  structure: any
 }
 
 export interface FileContent {

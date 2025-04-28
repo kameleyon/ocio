@@ -11,10 +11,22 @@ import {
   Twitter, 
   Linkedin, 
   Mail,
-  Terminal
+  Terminal,
+  type LucideIcon
 } from 'lucide-react'
 
-const footerLinks = [
+interface FooterLink {
+  name: string;
+  href: string;
+  icon?: LucideIcon;
+}
+
+interface FooterSection {
+  title: string;
+  links: FooterLink[];
+}
+
+const footerLinks: FooterSection[] = [
   {
     title: 'Product',
     links: [
