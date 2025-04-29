@@ -64,12 +64,26 @@ OptimusCode.io is a web platform that generates full-stack MVP web applications 
 - ✅ Build interactive app preview component
 - ✅ Implement real-time status updates during generation
 
+
+
 ### Pending Components ❌
 
 #### User Management
 - ❌ Add user account management UI
+- ❌ Update name, email, and reset password. 
+- ❌ Show subcription packages and options to upgrade and downgrade
+- ❌ Options for top up token
 - ❌ Create payment integration for premium tiers
+- ❌ Billing history and next billing date 
+- ❌ Set preference of LLM choice 
 - ❌ Implement usage analytics dashboard
+- ❌ Logout button including clear session and cache
+
+
+### AgentOCIO Implementation
+- ❌ modify OCIOmcp into and API 
+- ❌ Connect OCIOapi to the realtime build full stack app
+- ❌ (additional details)
 
 #### Testing & Deployment
 - ❌ Create unit tests for core services
@@ -143,7 +157,7 @@ The application follows a client-server architecture with:
 
 ## Next Steps
 1. Add user account management UI
-2. Create payment integration for premium tiers
+2. Create payment integration for premium tiers and top up token
 3. Implement usage analytics dashboard
 4. Create unit tests for core services
 5. Configure production deployment

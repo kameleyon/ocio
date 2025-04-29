@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useAuth } from '@/contexts/auth-context'
 import { Button } from '@/components/ui/button'
 import { Container } from '@/components/ui/container'
-import { Code, LogOut, Menu, Package, Terminal } from 'lucide-react'
+import { Code, LogOut, Menu, Package, Terminal, User } from 'lucide-react'
 
 export default function DashboardNavbar() {
   const { signOut, profile } = useAuth()
@@ -34,13 +34,24 @@ export default function DashboardNavbar() {
               <Package className="h-4 w-4" />
               <span>Projects</span>
             </Link>
+            <Link 
+              href="/profile" 
+              className="text-lightGray hover:text-whiteSmoke transition flex items-center gap-1.5"
+            >
+              <User className="h-4 w-4" />
+              <span>Profile</span>
+            </Link>
             
             <div className="h-6 border-l border-slateBlue/30 mx-2"></div>
             
             <Button
               variant="outline"
               className="border-slateBlue/50 text-lightGray hover:text-whiteSmoke hover:border-slateBlue"
-              onClick={() => signOut()}
+              onClick={() => {
+                signOut()
+                // Force navigation to landing page
+                window.location.href = '/'
+              }}
             >
               <LogOut className="h-4 w-4 mr-1.5" />
               Sign Out
@@ -75,6 +86,14 @@ export default function DashboardNavbar() {
               <Package className="h-4 w-4 mr-2" />
               <span>Projects</span>
             </Link>
+            <Link 
+              href="/profile" 
+              className="text-lightGray hover:text-whiteSmoke p-2 rounded-md flex items-center"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <User className="h-4 w-4 mr-2" />
+              <span>Profile</span>
+            </Link>
             
             <Button
               variant="outline"
@@ -82,6 +101,8 @@ export default function DashboardNavbar() {
               onClick={() => {
                 signOut()
                 setMobileMenuOpen(false)
+                // Force navigation to landing page
+                window.location.href = '/'
               }}
             >
               <LogOut className="h-4 w-4 mr-2" />
