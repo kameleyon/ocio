@@ -1,8 +1,20 @@
 {
-  "/not-found": "app/not-found.js",
+  "/_not-found": "app/_not-found.js",
+  "/api/preview/[projectId]/route": "app/api/preview/[projectId]/route.js",
+  "/api/validation/route": "app/api/validation/route.js",
+  "/api/structure/route": "app/api/structure/route.js",
+  "/auth/callback/route": "app/auth/callback/route.js",
+  "/api/webhooks/supabase/route": "app/api/webhooks/supabase/route.js",
+  "/api/templates/route": "app/api/templates/route.js",
   "/page": "app/page.js",
   "/build/page": "app/build/page.js",
-  "/profile/page": "app/profile/page.js",
   "/login/page": "app/login/page.js",
-  "/projects/page": "app/projects/page.js"
+  "/signup/page": "app/signup/page.js",
+  "/profile/page": "app/profile/page.js",
+  "/projects/page": "app/projects/page.js",
+  "/signup/verify/page": "app/signup/verify/page.js",
+  "/api/projects/[id]/route": "app/api/projects/[id]/route.js",
+  "/api/projects/[id]/regenerate/route": "app/api/projects/[id]/regenerate/route.js",
+  "/api/projects/route": "app/api/projects/route.js",
+  "/api/projects/[id]/download/route": "app/api/projects/[id]/download/route.js"
 }

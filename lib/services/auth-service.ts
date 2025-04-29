@@ -8,18 +8,18 @@ export async function signUp(email: string, password: string): Promise<{ user: a
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        data: {
+          full_name: '',
+          avatar_url: '',
+        }
+      }
     })
 
     if (error) throw error
 
-    // Create profile entry if signup was successful
-    if (data.user) {
-      await supabase.from('profiles').insert({
-        id: data.user.id,
-        email: data.user.email || '',
-      })
-    }
-
+    // Profile creation is handled by Supabase trigger
     return { user: data.user, error: null }
   } catch (error) {
     console.error('Error in signUp:', error)
@@ -82,13 +82,42 @@ export async function getCurrentUser(): Promise<any | null> {
 
 export async function getProfile(userId: string): Promise<Profile | null> {
   try {
+    // Using maybeSingle instead of single to handle cases when profile might not exist yet
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', userId)
-      .single()
+      .maybeSingle()
 
-    if (error) throw error
+    if (error) {
+      // Only throw if it's not a "not found" error
+      if (error.code !== 'PGRST116') {
+        throw error
+      }
+    }
+
+    // If no profile found but we have a userId, create a basic profile
+    if (!data && userId) {
+      const user = await supabase.auth.getUser()
+      if (user.data?.user) {
+        const email = user.data.user.email || ''
+        const { data: newProfile, error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            id: userId,
+            email: email,
+            full_name: null,
+            avatar_url: null,
+            subscription_tier: 'free',
+            generation_count: 0
+          })
+          .select()
+          .single()
+          
+        if (insertError) throw insertError
+        return newProfile
+      }
+    }
 
     return data
   } catch (error) {

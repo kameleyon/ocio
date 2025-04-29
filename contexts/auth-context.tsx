@@ -99,17 +99,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: {
+            full_name: '',
+            avatar_url: '',
+          }
+        }
       })
 
       if (error) throw error
 
-      // Create profile entry if signup was successful
+      // Profile creation is handled by Supabase trigger
       if (data.user) {
-        await supabase.from('profiles').insert({
-          id: data.user.id,
-          email: data.user.email || '',
-        })
-        
         // Redirect to login with message about verification
         router.push('/login?message=verification-email-sent')
       }
