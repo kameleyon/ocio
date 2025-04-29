@@ -81,9 +81,13 @@ export class ProjectService {
       // 3. Generate zip file
       const zipBlob = await generateZipFile(projectDetails.name, fileContents);
       
+      // Log progress
+      console.log(`Generated ${fileContents.length} files for project ${projectDetails.name}`);
+      
       // 4. Store the file in Supabase Storage
       const timestamp = Date.now();
-      const filePath = `project-zips/${projectId}/${timestamp}-${projectDetails.name.toLowerCase().replace(/\s+/g, '-')}.zip`;
+      const normalizedName = projectDetails.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const filePath = `project-zips/${projectId}/${timestamp}-${normalizedName}.zip`;
       
       const { error: uploadError } = await supabase.storage
         .from('project-files')

@@ -1,12 +1,8 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-import { type CookieOptions } from '@supabase/ssr'
-import { Database } from '@/lib/supabase/types'
 
-export function createClient() {
-  const cookieStore = cookies()
-
-  return createServerClient<Database>(
+export function createClient(cookieStore: ReturnType<typeof cookies>) {
+  return createServerClient(
     process.env.SUPABASE_URL!,
     process.env.SUPABASE_ANON_KEY!,
     {
@@ -14,13 +10,19 @@ export function createClient() {
         get(name: string) {
           return cookieStore.get(name)?.value
         },
-        set(name: string, value: string, options: CookieOptions) {
+        set(name: string, value: string, options) {
           cookieStore.set({ name, value, ...options })
         },
-        remove(name: string, options: CookieOptions) {
+        remove(name: string, options) {
           cookieStore.set({ name, value: '', ...options })
         },
       },
     }
   )
+}
+
+// For API route handlers
+export function createRouteHandlerClient() {
+  const cookieStore = cookies()
+  return createClient(cookieStore)
 }

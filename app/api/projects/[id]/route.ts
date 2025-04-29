@@ -2,19 +2,22 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
 import { generateFileContents, generateZipFile } from '@/lib/services/ai-service'
+import { withErrorHandling } from '@/lib/utils/api-error'
+import { withRateLimit } from '@/lib/utils/rate-limiter'
+import { ApiError } from '@/lib/utils/api-error'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const cookieStore = cookies()
-  const supabase = createClient()
-  
-  try {
+export const GET = withErrorHandling(
+  withRateLimit(async (
+    request: NextRequest,
+    { params }: { params: { id: string } }
+  ) => {
+    const cookieStore = cookies()
+    const supabase = createClient(cookieStore)
+    
     // Check auth status
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      throw ApiError.unauthorized('Authentication required')
     }
     
     const projectId = params.id
@@ -29,30 +32,37 @@ export async function GET(
     
     if (error) {
       if (error.code === 'PGRST116') {
-        return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+        throw ApiError.notFound('Project not found')
       }
-      throw error
+      throw ApiError.internal('Error fetching project')
     }
     
+    // Add audit log for project view
+    await supabase.rpc('add_audit_log', {
+      p_user_id: session.user.id,
+      p_action: 'view',
+      p_entity_type: 'project',
+      p_entity_id: projectId,
+      p_details: {},
+      p_ip_address: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip')
+    })
+    
     return NextResponse.json(project)
-  } catch (error) {
-    console.error('Error fetching project:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
-}
+  })
+)
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const cookieStore = cookies()
-  const supabase = createClient()
-  
-  try {
+export const PUT = withErrorHandling(
+  withRateLimit(async (
+    request: NextRequest,
+    { params }: { params: { id: string } }
+  ) => {
+    const cookieStore = cookies()
+    const supabase = createClient(cookieStore)
+    
     // Check auth status
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      throw ApiError.unauthorized('Authentication required')
     }
     
     const projectId = params.id
@@ -60,16 +70,21 @@ export async function PUT(
     // Check if project exists and belongs to user
     const { data: existingProject, error: fetchError } = await supabase
       .from('projects')
-      .select('id, user_id')
+      .select('id, user_id, status')
       .eq('id', projectId)
       .eq('user_id', session.user.id)
       .single()
     
     if (fetchError) {
       if (fetchError.code === 'PGRST116') {
-        return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+        throw ApiError.notFound('Project not found')
       }
-      throw fetchError
+      throw ApiError.internal('Error fetching project')
+    }
+    
+    // Only allow updates for projects that are not in progress
+    if (existingProject.status === 'generating' || existingProject.status === 'pending') {
+      throw ApiError.badRequest('Cannot update a project that is currently generating')
     }
     
     // Get update data from request
@@ -84,6 +99,11 @@ export async function PUT(
         return obj
       }, {} as Record<string, any>)
     
+    // Make sure there are valid fields to update
+    if (Object.keys(filteredUpdates).length === 0) {
+      throw ApiError.badRequest('No valid fields to update')
+    }
+    
     // Update project
     const { data, error } = await supabase
       .from('projects')
@@ -92,27 +112,36 @@ export async function PUT(
       .select()
       .single()
     
-    if (error) throw error
+    if (error) {
+      throw ApiError.internal('Error updating project')
+    }
+    
+    // Add audit log for project update
+    await supabase.rpc('add_audit_log', {
+      p_user_id: session.user.id,
+      p_action: 'update',
+      p_entity_type: 'project',
+      p_entity_id: projectId,
+      p_details: { updates: filteredUpdates },
+      p_ip_address: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip')
+    })
     
     return NextResponse.json(data)
-  } catch (error) {
-    console.error('Error updating project:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
-}
+  })
+)
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const cookieStore = cookies()
-  const supabase = createClient()
-  
-  try {
+export const DELETE = withErrorHandling(
+  withRateLimit(async (
+    request: NextRequest,
+    { params }: { params: { id: string } }
+  ) => {
+    const cookieStore = cookies()
+    const supabase = createClient(cookieStore)
+    
     // Check auth status
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      throw ApiError.unauthorized('Authentication required')
     }
     
     const projectId = params.id
@@ -120,16 +149,22 @@ export async function DELETE(
     // Check if project exists and belongs to user
     const { data: existingProject, error: fetchError } = await supabase
       .from('projects')
-      .select('id, user_id')
+      .select('id, user_id, name')
       .eq('id', projectId)
       .eq('user_id', session.user.id)
       .single()
     
     if (fetchError) {
       if (fetchError.code === 'PGRST116') {
-        return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+        throw ApiError.notFound('Project not found')
       }
-      throw fetchError
+      throw ApiError.internal('Error fetching project')
+    }
+    
+    // Store project info for audit log
+    const projectInfo = {
+      id: existingProject.id,
+      name: existingProject.name
     }
     
     // Delete files from storage
@@ -150,11 +185,20 @@ export async function DELETE(
       .delete()
       .eq('id', projectId)
     
-    if (error) throw error
+    if (error) {
+      throw ApiError.internal('Error deleting project')
+    }
+    
+    // Add audit log for project deletion
+    await supabase.rpc('add_audit_log', {
+      p_user_id: session.user.id,
+      p_action: 'delete',
+      p_entity_type: 'project',
+      p_entity_id: projectId,
+      p_details: projectInfo,
+      p_ip_address: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip')
+    })
     
     return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error('Error deleting project:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
-}
+  })
+)

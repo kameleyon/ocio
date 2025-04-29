@@ -1,4 +1,5 @@
 import './globals.css'
+import './animations.css'
 import type { Metadata } from 'next'
 import { Comfortaa, Questrial } from 'next/font/google'
 import { ParticleBackground } from '@/components/ui/particle-background'

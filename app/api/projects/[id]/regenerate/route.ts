@@ -1,136 +1,104 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { cookies } from 'next/headers'
-import { 
-  generateProjectDetails, 
-  generateFileContents, 
-  generateZipFile 
-} from '@/lib/services/ai-service'
+import { createRouteHandlerClient } from '@/lib/supabase/server'
+import { withErrorHandling } from '@/lib/utils/api-error'
+import { withRateLimit } from '@/lib/utils/rate-limiter'
+import { ApiError } from '@/lib/utils/api-error'
+import { ProjectService } from '@/lib/services/project-service'
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const cookieStore = cookies()
-  const supabase = createClient()
-  
-  try {
-    // Check auth status
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-    
-    const projectId = params.id
-    
-    // Get project
-    const { data: project, error } = await supabase
-      .from('projects')
-      .select('*')
-      .eq('id', projectId)
-      .eq('user_id', session.user.id)
-      .single()
-    
-    if (error) {
-      if (error.code === 'PGRST116') {
-        return NextResponse.json({ error: 'Project not found' }, { status: 404 })
+export const POST = withErrorHandling(
+  withRateLimit(
+    async (
+      request: NextRequest,
+      { params }: { params: { id: string } }
+    ) => {
+      const supabase = createRouteHandlerClient()
+      
+      // Check auth status
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        throw ApiError.unauthorized('Authentication required')
       }
-      throw error
-    }
-    
-    // Check user's generation limit (free tier: 5/day, pro tier: unlimited)
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('subscription_tier, generation_count')
-      .eq('id', session.user.id)
-      .single()
-    
-    if (profileError) {
-      throw profileError
-    }
-    
-    const isFreeUser = !profile.subscription_tier || profile.subscription_tier === 'free'
-    if (isFreeUser && profile.generation_count >= 5) {
-      return NextResponse.json({ 
-        error: 'Generation limit reached for free tier', 
-        limitReached: true 
-      }, { status: 403 })
-    }
-    
-    // Update status to generating
-    await supabase
-      .from('projects')
-      .update({ status: 'generating' })
-      .eq('id', projectId)
-    
-    // Increment user's generation count
-    await supabase.rpc('increment_generation_count', {
-      user_id: session.user.id
-    })
-    
-    // Start background generation process
-    // For MVP, we simulate a background process with a status update
-    // In production, this would be a background job or serverless function
-    setTimeout(async () => {
+      
+      const projectId = params.id
+      
+      // Check if project exists and belongs to user
+      const { data: project, error: fetchError } = await supabase
+        .from('projects')
+        .select('id, user_id, prompt, status')
+        .eq('id', projectId)
+        .eq('user_id', session.user.id)
+        .single()
+      
+      if (fetchError) {
+        if (fetchError.code === 'PGRST116') {
+          throw ApiError.notFound('Project not found')
+        }
+        throw ApiError.internal('Error fetching project')
+      }
+      
+      // Check if project is already generating
+      if (project.status === 'generating' || project.status === 'pending') {
+        throw ApiError.badRequest('Project is already generating. Please wait for it to complete.')
+      }
+      
+      // Check user's regeneration limit
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('subscription_tier, generation_count')
+        .eq('id', session.user.id)
+        .single()
+      
+      if (profileError) {
+        throw ApiError.internal('Error fetching user profile')
+      }
+      
+      const isFreeUser = !profile.subscription_tier || profile.subscription_tier === 'free'
+      if (isFreeUser && profile.generation_count >= 5) {
+        throw ApiError.forbidden('Regeneration limit reached for free tier', {
+          code: 'LIMIT_REACHED',
+          meta: {
+            limitReached: true,
+            tier: 'free',
+            upgradeUrl: '/pricing'
+          }
+        })
+      }
+      
       try {
-        // Generate project details
-        const projectDetails = await generateProjectDetails(project.prompt)
+        // Create project service
+        const projectService = new ProjectService()
         
-        // Generate file contents
-        const fileContents = await generateFileContents(project.prompt, projectDetails)
+        // Start regeneration process
+        const success = await projectService.regenerateProject(projectId)
         
-        // Generate zip file
-        const zipBlob = await generateZipFile(projectDetails.name, fileContents)
+        if (!success) {
+          throw new Error('Failed to start regeneration process')
+        }
         
-        // Convert Blob to Buffer for Node.js environment
-        const arrayBuffer = await zipBlob.arrayBuffer()
-        const buffer = Buffer.from(arrayBuffer)
+        // Increment user's generation count
+        await projectService.incrementUserGenerationCount(session.user.id)
         
-        // Store the file in Supabase Storage
-        const timestamp = Date.now()
-        const filePath = `project-zips/${projectId}/${timestamp}-${projectDetails.name.toLowerCase().replace(/\s+/g, '-')}.zip`
+        // Add audit log for regeneration
+        await supabase.rpc('add_audit_log', {
+          p_user_id: session.user.id,
+          p_action: 'regenerate',
+          p_entity_type: 'project',
+          p_entity_id: projectId,
+          p_details: { prompt: project.prompt },
+          p_ip_address: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip')
+        })
         
-        const { error: uploadError } = await supabase.storage
-          .from('project-files')
-          .upload(filePath, buffer, {
-            contentType: 'application/zip',
-            upsert: true
-          })
-          
-        if (uploadError) throw uploadError
-        
-        // Generate the public URL for the file
-        const { data: publicUrl } = supabase.storage
-          .from('project-files')
-          .getPublicUrl(filePath)
-        
-        // Update project with completed status and download URL
-        await supabase
-          .from('projects')
-          .update({
-            status: 'completed',
-            name: projectDetails.name,
-            description: projectDetails.description,
-            tech_stack: projectDetails.techStack,
-            structure: projectDetails.structure,
-            download_url: publicUrl.publicUrl,
-          })
-          .eq('id', projectId)
-          
-      } catch (genError) {
-        console.error('Error in background generation:', genError)
-        
-        // Update project as failed
-        await supabase
-          .from('projects')
-          .update({ status: 'failed' })
-          .eq('id', projectId)
+        return NextResponse.json({ success: true, id: projectId, status: 'generating' })
+      } catch (error) {
+        console.error('Error regenerating project:', error)
+        throw ApiError.internal('Failed to regenerate project')
       }
-    }, 1000)
-    
-    return NextResponse.json({ success: true, status: 'generating' })
-  } catch (error) {
-    console.error('Error regenerating project:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
-}
+    },
+    // Custom rate limit for regeneration
+    {
+      limit: 5,
+      window: 3600, // 1 hour window
+      message: 'You can only regenerate 5 projects per hour. Please try again later.'
+    }
+  )
+)
