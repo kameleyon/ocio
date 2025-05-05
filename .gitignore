@@ -18,6 +18,7 @@ yarn-error.log*
 
 # Coverage reports
 coverage/
+docs/*
 
 # Generated files
 .DS_Store
