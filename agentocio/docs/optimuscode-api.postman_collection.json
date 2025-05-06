@@ -1,0 +1,410 @@
+{
+  "info": {
+    "name": "OptimusCode API",
+    "description": "Collection for OptimusCode MCP API endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "item": [
+    {
+      "name": "Tool Operations",
+      "description": "Endpoints for working with MCP tools",
+      "item": [
+        {
+          "name": "List Tools",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/tools",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tools"]
+            },
+            "description": "Get a list of all available tools with their schemas"
+          }
+        },
+        {
+          "name": "Get Tool Schema",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/tools/:name/schema",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tools", ":name", "schema"],
+              "variable": [
+                {
+                  "key": "name",
+                  "value": "component-builder",
+                  "description": "Tool name"
+                }
+              ]
+            },
+            "description": "Get the input schema for a specific tool"
+          }
+        },
+        {
+          "name": "Execute Tool (Direct)",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/tools/:name/execute",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tools", ":name", "execute"],
+              "variable": [
+                {
+                  "key": "name",
+                  "value": "component-builder",
+                  "description": "Tool name"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"react\",\n  \"name\": \"Button\",\n  \"props\": [\"variant\", \"size\", \"disabled\"],\n  \"styling\": \"tailwind\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Execute a tool synchronously and get the result directly"
+          }
+        },
+        {
+          "name": "Create Tool Job",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/tools/:name/job",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tools", ":name", "job"],
+              "variable": [
+                {
+                  "key": "name",
+                  "value": "code-fixer",
+                  "description": "Tool name"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"args\": {\n    \"code\": \"function example() { console.log('hello world') }\",\n    \"language\": \"javascript\",\n    \"fixes\": [\"style\", \"security\"]\n  },\n  \"priority\": \"normal\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Create an asynchronous job to execute a tool"
+          }
+        },
+        {
+          "name": "Generate App",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/tools/generate-app",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tools", "generate-app"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"TaskManager\",\n  \"description\": \"A simple task management application\",\n  \"type\": \"web\",\n  \"features\": [\"auth\", \"crud\", \"search\"],\n  \"prompt\": \"Create a task manager app with user authentication, CRUD operations for tasks, and search functionality.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Generate a new application using the generator tool"
+          }
+        },
+        {
+          "name": "Execute Any Tool",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/execute-tool",
+              "host": ["{{baseUrl}}"],
+              "path": ["execute-tool"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"component-builder\",\n  \"args\": {\n    \"type\": \"react\",\n    \"name\": \"Button\",\n    \"props\": [\"variant\", \"size\", \"disabled\"],\n    \"styling\": \"tailwind\"\n  },\n  \"async\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Execute any tool by name without constructing a specific URL"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Job Operations",
+      "description": "Endpoints for managing asynchronous jobs",
+      "item": [
+        {
+          "name": "List Jobs",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs?status=pending",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending",
+                  "description": "Filter jobs by status (pending, active, completed, failed, cancelled)"
+                }
+              ]
+            },
+            "description": "Get a list of all jobs with optional status filtering"
+          }
+        },
+        {
+          "name": "Get Job Details",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "job-123",
+                  "description": "Job ID"
+                }
+              ]
+            },
+            "description": "Get detailed information about a specific job"
+          }
+        },
+        {
+          "name": "Get Job Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "job-123",
+                  "description": "Job ID"
+                }
+              ]
+            },
+            "description": "Get the status of a job"
+          }
+        },
+        {
+          "name": "Get Job Result",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/:id/result",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs", ":id", "result"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "job-123",
+                  "description": "Job ID"
+                }
+              ]
+            },
+            "description": "Get the result of a completed job"
+          }
+        },
+        {
+          "name": "Cancel Job",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/jobs/:id/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "jobs", ":id", "cancel"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "job-123",
+                  "description": "Job ID"
+                }
+              ]
+            },
+            "description": "Cancel a pending or active job"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Metadata Operations",
+      "description": "Endpoints for managing metadata",
+      "item": [
+        {
+          "name": "List Metadata",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/metadata",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "metadata"]
+            },
+            "description": "Get a list of all metadata items"
+          }
+        },
+        {
+          "name": "Get Metadata",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/metadata/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "metadata", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "meta-123",
+                  "description": "Metadata ID"
+                }
+              ]
+            },
+            "description": "Get a specific metadata item"
+          }
+        },
+        {
+          "name": "Create Metadata",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/metadata",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "metadata"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Project Settings\",\n  \"type\": \"settings\",\n  \"data\": {\n    \"theme\": \"dark\",\n    \"notifications\": true,\n    \"language\": \"en\"\n  },\n  \"tags\": [\"settings\", \"user-preference\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Create a new metadata item"
+          }
+        },
+        {
+          "name": "Update Metadata",
+          "request": {
+            "method": "PUT",
+            "url": {
+              "raw": "{{baseUrl}}/api/metadata/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "metadata", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "meta-123",
+                  "description": "Metadata ID"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Project Settings\",\n  \"type\": \"settings\",\n  \"data\": {\n    \"theme\": \"light\",\n    \"notifications\": false,\n    \"language\": \"en\"\n  },\n  \"tags\": [\"settings\", \"user-preference\"]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Update an existing metadata item"
+          }
+        },
+        {
+          "name": "Delete Metadata",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/metadata/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "metadata", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "meta-123",
+                  "description": "Metadata ID"
+                }
+              ]
+            },
+            "description": "Delete a metadata item"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Documentation",
+      "description": "Endpoints for API documentation",
+      "item": [
+        {
+          "name": "Get API Documentation",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/docs",
+              "host": ["{{baseUrl}}"],
+              "path": ["docs"]
+            },
+            "description": "Access the Swagger UI documentation"
+          }
+        },
+        {
+          "name": "Get OpenAPI Specification",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/docs/spec.json",
+              "host": ["{{baseUrl}}"],
+              "path": ["docs", "spec.json"]
+            },
+            "description": "Get the OpenAPI specification in JSON format"
+          }
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "value",
+        "value": "{{apiKey}}",
+        "type": "string"
+      },
+      {
+        "key": "key",
+        "value": "X-API-Key",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001",
+      "type": "string",
+      "description": "Base URL for the OptimusCode API"
+    },
+    {
+      "key": "apiKey",
+      "value": "your-api-key-here",
+      "type": "string",
+      "description": "Your API key for authentication"
+    }
+  ]
+}
