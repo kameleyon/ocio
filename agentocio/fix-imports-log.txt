@@ -1,0 +1,400 @@
+Starting to scan directory: C:\Users\Administrator\ocio\agentocio\dist
+Processing: C:\Users\Administrator\ocio\agentocio\dist\lib\postBootActivator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\lib\resource-manager.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\setup-claude-server.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\custom-stdio.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\api-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\assistant-router.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\auth-checker.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\auto-continue.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\avatar-renderer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\backup-creator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\build-runner.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\cache-cleaner.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\chat-logger.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\cli-prompter.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\cli-toolkit.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\code-analyzer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\code-fixer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\component-builder.js
+  Found import/export without .js extension: './{{name}}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\component-builder.js
+  Found import/export without .js extension: './${componentName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\component-builder.js
+  Found import/export without .js extension: './${convertCase(componentName, ' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\component-builder.js
+  Found import/export without .js extension: './${componentName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\component-builder.js
+  Found import/export without .js extension: './${convertCase(componentName, ' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\component-builder.js
+  Fixed 5 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\component-builder.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\db-migrator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\doc-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\duplicate-finder.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\env-manager.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\error-logger.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\event-dispatcher.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\file-watcher.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\formatter.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\git-initializer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\i18n-loader.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\log-viewer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\metadata-reader.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\mock-data-inserter.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\notification-sender.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\performance-monitor.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\persona-loader.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\plugin-loader.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\plugin-manager.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\refactor-tool.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\schema-validator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\test-runner.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\theme-switcher.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\token-refresher.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\tone-adjuster.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\tool-suggester.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\code-tools\voice-cloner.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\api-integration.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\content-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\index.js
+  Found import/export without .js extension: './version-control' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\index.js
+  Found import/export without .js extension: './content-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\index.js
+  Found import/export without .js extension: './content-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\index.js
+  Found import/export without .js extension: './api-client' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\index.js
+  Found import/export without .js extension: './i18n' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\index.js
+  Found import/export without .js extension: './version-control' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\index.js
+  Found import/export without .js extension: './content-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\index.js
+  Found import/export without .js extension: './api-client' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\index.js
+  Found import/export without .js extension: './i18n' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\index.js
+  Fixed 9 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\internationalization.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\translation-gen.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\advanced-features\version-control.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\api-dependent\ai-connector.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\api-dependent\api-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\api-dependent\code-analyzer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\api-dependent\collab-system.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\api-dependent\deploy-tool.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\api-dependent\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\api-dependent\model-switcher.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\auth\token-refresher.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\automated\cli\cli-prompter.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\automated\cli\cli-toolkit.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\automated\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\automated-tools\auto-continue.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\automated-tools\chat-initiator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\automated-tools\code-fixer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\automated-tools\code-splitter.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\automated-tools\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\automated-tools\path-enforcer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\automated-tools\plan-creator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\automated-tools\snapshot.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\automated-tools\tone-adjuster.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\automation\auto-continue.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\browser-launcher.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\cmd-executor.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\command-manager.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\env-manager.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\handlers.js
+  Found import/export without .js extension: './cmd-executor' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\handlers.js
+  Found import/export without .js extension: './output-reader' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\handlers.js
+  Found import/export without .js extension: './session-killer' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\handlers.js
+  Found import/export without .js extension: './session-lister' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\handlers.js
+  Found import/export without .js extension: './process-lister' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\handlers.js
+  Found import/export without .js extension: './process-killer' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\handlers.js
+  Found import/export without .js extension: './browser-launcher' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\handlers.js
+  Found import/export without .js extension: './env-manager' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\handlers.js
+  Fixed 8 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\handlers.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\index.js
+  Found import/export without .js extension: './command-manager' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\index.js
+  Found import/export without .js extension: './handlers' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\index.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\index.js
+  Found import/export without .js extension: './cmd-executor' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\index.js
+  Found import/export without .js extension: './output-reader' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\index.js
+  Found import/export without .js extension: './session-killer' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\index.js
+  Found import/export without .js extension: './session-lister' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\index.js
+  Found import/export without .js extension: './process-lister' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\index.js
+  Found import/export without .js extension: './process-killer' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\index.js
+  Found import/export without .js extension: './browser-launcher' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\index.js
+  Found import/export without .js extension: './env-manager' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\index.js
+  Fixed 11 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\output-reader.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\process-killer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\process-lister.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\session-killer.js
+  Found import/export without .js extension: './cmd-executor' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\session-killer.js
+  Found import/export without .js extension: './output-reader' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\session-killer.js
+  Fixed 2 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\session-killer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\session-lister.js
+  Found import/export without .js extension: './cmd-executor' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\session-lister.js
+  Found import/export without .js extension: './output-reader' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\session-lister.js
+  Fixed 2 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\session-lister.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\command\types.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\communication\notification-sender.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\configuration\env-manager.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\content\tone-adjuster.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\context-management\chat-transition.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\context-management\context-tracker.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\context-management\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\database\db-migrator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\database-api\generators.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\database-api\graphql-gen.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\database-api\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\database-api\schema-gen.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\database-api\service-builder.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\database-api\types.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\database-api\wasm-tool.js
+  Found import/export without .js extension: './schema-gen' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\database-api\wasm-tool.js
+  Fixed 1 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\database-api\wasm-tool.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\deployment\build-runner.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\documentation\api-docs-tool.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\documentation\cms-connector.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\documentation\doc-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\documentation\docs-updater.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\documentation\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\documentation\legal-creator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\documentation\seo-tool.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\events\event-dispatcher.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\extensibility\plugin-loader.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\code-formatter.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\dependency-tool.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\diff-applier.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\file-watcher.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\filesystem.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\git-tool.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\handlers.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\import-fixer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\markdown-tool.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\metadata-reader.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\schema-checker.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\search.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\types.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\typescript-error-fixer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\filesystem\version-manager.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\functions\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\internationalization\i18n-loader.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\logging\chat-logger.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\logging\error-logger.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\logging\log-viewer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\media\avatar-renderer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\media\voice-cloner.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\meta\tool-suggester.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\persistence\backup-creator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\persistence\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\persistence\session-state.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\persona\persona-loader.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\project-organization\directory-structure.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\project-organization\documentation-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\project-organization\duplicate-finder.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\project-organization\file-monitor.js
+  Found import/export without .js extension: './${filePath}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\project-organization\file-monitor.js
+  Fixed 1 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\project-organization\file-monitor.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\project-organization\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\project-planning\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\project-planning\plan-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\project-planning\plan-visualizer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\project-planning\project-plan.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\prompts-handler.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\routing\assistant-router.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\run-with-tools.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\security\auth-checker.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\system\cache-cleaner.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\system\health-checker.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\system\performance-monitor.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\access-checker.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\code-reviewer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\complexity-tool.js
+  Found import/export without .js extension: './test-manager' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\complexity-tool.js
+  Fixed 1 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\complexity-tool.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\debug-assist.js
+  Found import/export without .js extension: './module' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\debug-assist.js
+  Fixed 1 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\debug-assist.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\error-resolver.js
+  Found import/export without .js extension: './module' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\error-resolver.js
+  Found import/export without .js extension: './module' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\error-resolver.js
+  Fixed 2 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\error-resolver.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\index.js
+  Found import/export without .js extension: './test-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\index.js
+  Found import/export without .js extension: './debug-assist' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\index.js
+  Found import/export without .js extension: './performance-profiler' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\index.js
+  Found import/export without .js extension: './test-manager' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\index.js
+  Found import/export without .js extension: './access-checker' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\index.js
+  Found import/export without .js extension: './code-reviewer' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\index.js
+  Found import/export without .js extension: './complexity-tool' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\index.js
+  Fixed 7 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\mock-data-inserter.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\performance-profiler.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\test-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\test-manager.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\testing-quality\test-runner.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\tools\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\browser-checker.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\component-builder.js
+  Found import/export without .js extension: './{{name}}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\component-builder.js
+  Found import/export without .js extension: './${componentName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\component-builder.js
+  Found import/export without .js extension: './${convertCase(componentName, ' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\component-builder.js
+  Found import/export without .js extension: './${componentName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\component-builder.js
+  Found import/export without .js extension: './${convertCase(componentName, ' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\component-builder.js
+  Fixed 5 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\component-builder.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\component-gen.js
+  Found import/export without .js extension: '../theme' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\component-gen.js
+  Found import/export without .js extension: './${componentName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\component-gen.js
+  Fixed 2 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\component-gen.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\component-templates.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\enhancement-tool.js
+  Found import/export without .js extension: '../database-api/generators' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\enhancement-tool.js
+  Found import/export without .js extension: './browser-checker' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\enhancement-tool.js
+  Fixed 2 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\enhancement-tool.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\context-generator.js
+  Found import/export without .js extension: '../context/FlowContext' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\context-generator.js
+  Found import/export without .js extension: '../store/flowSlice' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\context-generator.js
+  Found import/export without .js extension: '../store/store' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\context-generator.js
+  Fixed 3 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\context-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\examples\checkout-flow.js
+  Found import/export without .js extension: '../index' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\examples\checkout-flow.js
+  Fixed 1 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\examples\checkout-flow.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\flow-designer.js
+  Found import/export without .js extension: './schema' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\flow-designer.js
+  Found import/export without .js extension: './react-generator-core' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\flow-designer.js
+  Fixed 2 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\flow-designer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\index.js
+  Found import/export without .js extension: './flow-designer' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\index.js
+  Found import/export without .js extension: './flow-designer' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\index.js
+  Found import/export without .js extension: './schema' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\index.js
+  Found import/export without .js extension: './utils' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\index.js
+  Found import/export without .js extension: './react-generator-core' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\index.js
+  Found import/export without .js extension: './step-component-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\index.js
+  Found import/export without .js extension: './navigation-component-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\index.js
+  Found import/export without .js extension: './context-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\index.js
+  Found import/export without .js extension: './style-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\index.js
+  Found import/export without .js extension: './validation-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\index.js
+  Fixed 10 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\navigation-component-generator.js
+  Found import/export without .js extension: '../context/FlowContext' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\navigation-component-generator.js
+  Fixed 1 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\navigation-component-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+  Found import/export without .js extension: './utils' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+  Found import/export without .js extension: './step-component-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+  Found import/export without .js extension: './navigation-component-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+  Found import/export without .js extension: './context-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+  Found import/export without .js extension: './style-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+  Found import/export without .js extension: './validation-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+  Found import/export without .js extension: './context/FlowContext' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+  Found import/export without .js extension: './components/FlowBreadcrumbs' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+  Found import/export without .js extension: './components/ProgressIndicator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+  Found import/export without .js extension: './components/SummaryView' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+  Found import/export without .js extension: './${toKebabCase(name)}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+  Found import/export without .js extension: './schema' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+  Found import/export without .js extension: './utils/validation' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+  Fixed 13 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\react-generator-core.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\schema.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\step-component-generator.js
+  Found import/export without .js extension: './utils' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\step-component-generator.js
+  Found import/export without .js extension: '../context/FlowContext' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\step-component-generator.js
+  Found import/export without .js extension: '../utils/validation' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\step-component-generator.js
+  Fixed 3 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\step-component-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\style-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\tests\flow-designer.test.js
+  Found import/export without .js extension: '../index' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\tests\flow-designer.test.js
+  Fixed 1 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\tests\flow-designer.test.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\utils.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\validation-generator.js
+  Found import/export without .js extension: './validation' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\validation-generator.js
+  Fixed 1 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer\validation-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer.js
+  Found import/export without .js extension: './flow-designer/index' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer.js
+  Fixed 1 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\flow-designer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\angular-generator.js
+  Found import/export without .js extension: './utils' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\angular-generator.js
+  Found import/export without .js extension: './custom-icons' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\angular-generator.js
+  Fixed 2 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\angular-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\handlers.js
+  Found import/export without .js extension: './react-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\handlers.js
+  Found import/export without .js extension: './vue-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\handlers.js
+  Found import/export without .js extension: './angular-generator' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\handlers.js
+  Fixed 3 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\handlers.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\index.js
+  Found import/export without .js extension: './schemas' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\index.js
+  Found import/export without .js extension: './handlers' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\index.js
+  Fixed 2 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\react-generator.js
+  Found import/export without .js extension: './utils' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\react-generator.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\react-generator.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\react-generator.js
+  Found import/export without .js extension: './custom-icons' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\react-generator.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\react-generator.js
+  Found import/export without .js extension: './${managerName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\react-generator.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\react-generator.js
+  Found import/export without .js extension: './${managerName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\react-generator.js
+  Found import/export without .js extension: './${managerName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\react-generator.js
+  Found import/export without .js extension: './${managerName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\react-generator.js
+  Fixed 10 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\react-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\schemas.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\solid-generator.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\solid-generator.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\solid-generator.js
+  Found import/export without .js extension: './custom-icons' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\solid-generator.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\solid-generator.js
+  Found import/export without .js extension: './${managerName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\solid-generator.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\solid-generator.js
+  Found import/export without .js extension: './${managerName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\solid-generator.js
+  Found import/export without .js extension: './${managerName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\solid-generator.js
+  Found import/export without .js extension: './${managerName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\solid-generator.js
+  Fixed 9 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\solid-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\svelte-generator.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\svelte-generator.js
+  Found import/export without .js extension: './custom-icons' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\svelte-generator.js
+  Found import/export without .js extension: './custom-icons' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\svelte-generator.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\svelte-generator.js
+  Fixed 4 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\svelte-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\types.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\utils.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\vue-generator.js
+  Found import/export without .js extension: './utils' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\vue-generator.js
+  Found import/export without .js extension: './custom-icons' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\vue-generator.js
+  Found import/export without .js extension: './custom-icons' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\vue-generator.js
+  Fixed 3 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager\vue-generator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager.js
+  Found import/export without .js extension: './icon-manager/index' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager.js
+  Found import/export without .js extension: './custom-icons' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager.js
+  Found import/export without .js extension: './${managerName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager.js
+  Found import/export without .js extension: './types' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager.js
+  Found import/export without .js extension: './${managerName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager.js
+  Found import/export without .js extension: './${managerName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager.js
+  Found import/export without .js extension: './${managerName}' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager.js
+  Found import/export without .js extension: './custom-icons' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager.js
+  Found import/export without .js extension: './custom-icons' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager.js
+  Fixed 12 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\icon-manager.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\index.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\page-gen.js
+  Found import/export without .js extension: '../components/Header' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\page-gen.js
+  Found import/export without .js extension: '../components/Footer' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\page-gen.js
+  Found import/export without .js extension: '../components/Navigation' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\page-gen.js
+  Found import/export without .js extension: '../theme' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\page-gen.js
+  Fixed 4 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\page-gen.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\page-templates.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\project-gen.js
+  Found import/export without .js extension: './App' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\project-gen.js
+  Fixed 1 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\project-gen.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\project-templates.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\pwa-converter.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\responsive-ui.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\theme-switcher.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\token-extractor-handler.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\token-extractor.js
+  Found import/export without .js extension: './tokens' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\token-extractor.js
+  Found import/export without .js extension: './tokens' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\token-extractor.js
+  Found import/export without .js extension: './tokens' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\token-extractor.js
+  Found import/export without .js extension: './tokens' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\token-extractor.js
+  Found import/export without .js extension: './theme-store' in C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\token-extractor.js
+  Fixed 5 imports in: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\ui-generation\token-extractor.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\validation\schema-validator.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\oldtools\version-control\git-initializer.js
+Processing: C:\Users\Administrator\ocio\agentocio\dist\src\tools\registerTools.js
+
+----- Summary -----
+Total files processed: 206
+Files modified: 36
+Total imports fixed: 150
+Files with errors: 0
+Finished processing all files.
