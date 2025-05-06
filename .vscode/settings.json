@@ -1,0 +1,5 @@
+{
+  "git.ignoredRepositories": ["agentocio"],
+  "git.scanRepositories": ["."],
+  "git.autoRepositoryDetection": "openEditors"
+}
