@@ -558,8 +558,11 @@ function findToolsByKeywords(keywords: string[], limit: number = 5): ToolSuggest
       const matchedCapabilities: string[] = [];
       
       // Check name and display name
-      for (const keyword of expandedKeywords) {
-        if (tool.name.toLowerCase().includes(keyword) || 
+      // Convert Set to Array to avoid TypeScript downlevelIteration issues
+      const keywordsArray = Array.from(expandedKeywords);
+      for (let i = 0; i < keywordsArray.length; i++) {
+        const keyword = keywordsArray[i];
+        if (tool.name.toLowerCase().includes(keyword) ||
             tool.displayName.toLowerCase().includes(keyword)) {
           score += 10;
           matchedKeywords.push(keyword);
@@ -567,7 +570,8 @@ function findToolsByKeywords(keywords: string[], limit: number = 5): ToolSuggest
       }
       
       // Check description
-      for (const keyword of expandedKeywords) {
+      for (let i = 0; i < keywordsArray.length; i++) {
+        const keyword = keywordsArray[i];
         if (tool.description.toLowerCase().includes(keyword)) {
           score += 5;
           matchedKeywords.push(keyword);
@@ -575,8 +579,10 @@ function findToolsByKeywords(keywords: string[], limit: number = 5): ToolSuggest
       }
       
       // Check capabilities
-      for (const capability of tool.capabilities) {
-        for (const keyword of expandedKeywords) {
+      for (let c = 0; c < tool.capabilities.length; c++) {
+        const capability = tool.capabilities[c];
+        for (let i = 0; i < keywordsArray.length; i++) {
+          const keyword = keywordsArray[i];
           if (capability.toLowerCase().includes(keyword)) {
             score += 8;
             matchedKeywords.push(keyword);
@@ -586,8 +592,10 @@ function findToolsByKeywords(keywords: string[], limit: number = 5): ToolSuggest
       }
       
       // Check tags
-      for (const tag of tool.tags) {
-        for (const keyword of expandedKeywords) {
+      for (let t = 0; t < tool.tags.length; t++) {
+        const tag = tool.tags[t];
+        for (let i = 0; i < keywordsArray.length; i++) {
+          const keyword = keywordsArray[i];
           if (tag.toLowerCase().includes(keyword) || keyword.includes(tag.toLowerCase())) {
             score += 7;
             matchedKeywords.push(tag);
@@ -599,8 +607,9 @@ function findToolsByKeywords(keywords: string[], limit: number = 5): ToolSuggest
       score = score * (tool.weight / 50);
       
       // Remove duplicates from matched items
-      const uniqueKeywords = [...new Set(matchedKeywords)];
-      const uniqueCapabilities = [...new Set(matchedCapabilities)];
+      // Convert Set to Array without using spread syntax
+      const uniqueKeywords = Array.from(new Set(matchedKeywords));
+      const uniqueCapabilities = Array.from(new Set(matchedCapabilities));
       
       return {
         tool,
@@ -879,16 +888,20 @@ function extractKeywords(text: string): string[] {
     .sort((a, b) => b[1] - a[1])
     .map(entry => entry[0])
     .slice(0, 10); // Take top 10 keywords
-  
-  // Add any direct matches to known tool names or categories
-  const toolNames = tools.map(tool => tool.name.toLowerCase());
-  const toolCategories = tools.map(tool => tool.category.toLowerCase());
-  const directMatches = words.filter(word => 
-    toolNames.includes(word) || toolCategories.includes(word) || KEYWORD_MAPPINGS[word]
-  );
-  
-  // Merge and deduplicate
-  const allKeywords = [...new Set([...directMatches, ...sortedWords])];
+    
+    // Add any direct matches to known tool names or categories
+    const toolNames = tools.map(tool => tool.name.toLowerCase());
+    const toolCategories = tools.map(tool => tool.category.toLowerCase());
+    const directMatches = words.filter(word =>
+      toolNames.includes(word) || toolCategories.includes(word) || KEYWORD_MAPPINGS[word]
+    );
+    
+    // Create combined keyword array without using spread syntax
+  // Merge and deduplicate without using spread syntax for Set iteration
+  // First combine the arrays using concat
+  const combinedArray = directMatches.concat(sortedWords);
+  // Then create a Set from it and convert back to array
+  const allKeywords = Array.from(new Set(combinedArray));
   
   return allKeywords;
 }
@@ -1140,8 +1153,8 @@ async function handleGetCategories(args: any) {
     
     const { includeTools, countOnly } = result.data;
     
-    // Get unique categories
-    const categories = [...new Set(tools.map(tool => tool.category))];
+    // Get unique categories without using spread operator for Set
+    const categories = Array.from(new Set(tools.map(tool => tool.category)));
     
     // Sort alphabetically
     categories.sort();

@@ -528,7 +528,10 @@ function aggregateMetrics(
   // Aggregate each group
   const results: any[] = [];
   
-  for (const [key, groupMetrics] of groups.entries()) {
+  // Convert Map entries to array first to avoid TypeScript downlevelIteration issues
+  const groupEntries = Array.from(groups.entries());
+  for (let i = 0; i < groupEntries.length; i++) {
+    const [key, groupMetrics] = groupEntries[i];
     let value: number;
     
     switch (aggregation) {
@@ -1071,7 +1074,10 @@ async function handleGetHistograms(args: any) {
     // Otherwise, return all histograms
     const histograms: Record<string, HistogramData> = {};
     
-    for (const [histName, values] of state.histograms.entries()) {
+    // Convert Map entries to array first to avoid TypeScript downlevelIteration issues
+    const histogramEntries = Array.from(state.histograms.entries());
+    for (let i = 0; i < histogramEntries.length; i++) {
+      const [histName, values] = histogramEntries[i];
       histograms[histName] = calculateHistogram(values, bucketCount);
     }
     

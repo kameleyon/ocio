@@ -4,7 +4,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "esModuleInterop": true,
-    "downlevelIteration": true,
+    "downlevelIteration": true, /* Force-enable downlevelIteration for ES5/ES3 compatibility */
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

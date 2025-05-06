@@ -174,8 +174,9 @@ function getDefaultCacheDirectories(): string[] {
   directories.push(path.join(projectRoot, '.cache'));
   directories.push(path.join(projectRoot, 'tmp'));
   
-  // Store in cache stats for future reference
-  cacheStats.knownCacheDirs = [...new Set(directories)]; // Remove duplicates
+  // Store in cache stats for future reference - Fix for ES5 compatibility
+  const uniqueDirs = Array.from(new Set(directories));
+  cacheStats.knownCacheDirs = uniqueDirs;
   
   return cacheStats.knownCacheDirs;
 }

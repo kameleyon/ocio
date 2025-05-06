@@ -305,7 +305,10 @@ async function parseSchema(
         
         parsed = {};
         
-        for (const match of matches) {
+        // Convert RegExp match iterator to array to avoid TypeScript downlevelIteration issues
+        const matchesArray = Array.from(matches);
+        for (let i = 0; i < matchesArray.length; i++) {
+          const match = matchesArray[i];
           const typeName = match[1];
           const typeBody = match[2];
           
@@ -342,7 +345,10 @@ async function parseSchema(
         
         parsed = { types: {} };
         
-        for (const match of matches) {
+        // Convert RegExp match iterator to array to avoid TypeScript downlevelIteration issues
+        const matchesArray = Array.from(matches);
+        for (let i = 0; i < matchesArray.length; i++) {
+          const match = matchesArray[i];
           const typeName = match[1];
           const typeBody = match[2];
           
