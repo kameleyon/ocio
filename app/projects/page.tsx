@@ -64,7 +64,7 @@ export default function ProjectsPage() {
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc');
   const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const projectService = new ProjectService();
+  const projectService = new ProjectService(supabase); // Use the imported client-side supabase
 
   useEffect(() => {
     const checkAuth = async () => {

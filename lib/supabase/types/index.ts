@@ -21,6 +21,8 @@ export interface Database {
           created_at: string
           updated_at: string
           download_url?: string
+          structure?: Json
+          files?: Json
         }
         Insert: {
           id?: string
@@ -33,6 +35,8 @@ export interface Database {
           created_at?: string
           updated_at?: string
           download_url?: string
+          structure?: Json
+          files?: Json
         }
         Update: {
           id?: string
@@ -45,6 +49,8 @@ export interface Database {
           created_at?: string
           updated_at?: string
           download_url?: string
+          structure?: Json
+          files?: Json
         }
       }
       profiles: {
@@ -55,6 +61,8 @@ export interface Database {
           avatar_url?: string
           created_at: string
           updated_at: string
+          subscription_tier: string
+          generation_count: number
         }
         Insert: {
           id: string
@@ -63,6 +71,8 @@ export interface Database {
           avatar_url?: string
           created_at?: string
           updated_at?: string
+          subscription_tier?: string
+          generation_count?: number
         }
         Update: {
           id?: string
@@ -71,6 +81,34 @@ export interface Database {
           avatar_url?: string
           created_at?: string
           updated_at?: string
+          subscription_tier?: string
+          generation_count?: number
+        }
+      }
+      project_logs: {
+        Row: {
+          id: number
+          project_id: string
+          created_at: string
+          level: 'info' | 'error' | 'warning' | 'command' | 'debug' | 'success'
+          message: string
+          details?: Json
+        }
+        Insert: {
+          id?: number
+          project_id: string
+          created_at?: string
+          level: 'info' | 'error' | 'warning' | 'command' | 'debug' | 'success'
+          message: string
+          details?: Json
+        }
+        Update: {
+          id?: number
+          project_id?: string
+          created_at?: string
+          level?: 'info' | 'error' | 'warning' | 'command' | 'debug' | 'success'
+          message?: string
+          details?: Json
         }
       }
     }

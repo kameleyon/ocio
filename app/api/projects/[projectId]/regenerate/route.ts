@@ -9,7 +9,7 @@ export const POST = withErrorHandling(
   withRateLimit(
     async (
       request: NextRequest,
-      { params }: { params: { id: string } }
+      { params }: { params: { projectId: string } } // Changed id to projectId
     ) => {
       const supabase = createRouteHandlerClient()
       
@@ -19,7 +19,7 @@ export const POST = withErrorHandling(
         throw ApiError.unauthorized('Authentication required')
       }
       
-      const projectId = params.id
+      const projectId = params.projectId // Changed params.id to params.projectId
       
       // Check if project exists and belongs to user
       const { data: project, error: fetchError } = await supabase
@@ -66,7 +66,7 @@ export const POST = withErrorHandling(
       
       try {
         // Create project service
-        const projectService = new ProjectService()
+        const projectService = new ProjectService(supabase)
         
         // Start regeneration process
         const success = await projectService.regenerateProject(projectId)
@@ -87,6 +87,17 @@ export const POST = withErrorHandling(
           p_details: { prompt: project.prompt },
           p_ip_address: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip')
         })
+        
+        // Add a log entry for regeneration
+        try {
+            await supabase.from('project_logs').insert({
+                project_id: projectId,
+                level: 'command',
+                message: 'Project regeneration initiated by user.'
+            });
+        } catch (logError) {
+            console.error("Failed to add regeneration log:", logError);
+        }
         
         return NextResponse.json({ success: true, id: projectId, status: 'generating' })
       } catch (error) {

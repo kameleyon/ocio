@@ -1,359 +1,440 @@
-'use client'
+'use client';
 
-import React, { useState, useRef, useEffect } from 'react'
-import { 
-  Send, 
-  Download, 
-  RefreshCw, 
-  Clock, 
-  Loader2, 
-  Zap
-} from 'lucide-react'
-import AppPreview from './app-preview'
-import GenerationProgress, { 
-  defaultGenerationSteps, 
-  GenerationStep 
-} from './generation-progress'
-import StatusUpdate, { StatusLog } from './status-update'
-import { cn } from '@/lib/utils'
+import React, { useState, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  Download,
+  RefreshCw,
+  Loader2,
+  Zap,
+  XCircle, // For Cancel button
+} from 'lucide-react';
+import AppPreview from './app-preview';
+import GenerationProgress, {
+  defaultGenerationSteps,
+  GenerationStep // Actual frontend type
+} from './generation-progress';
+import StatusUpdate, { StatusLog } from './status-update';
+import { cn } from '@/lib/utils';
 
 interface BuildInterfaceProps {
-  projectId?: string
+  projectId?: string;
 }
 
-export default function BuildInterface({ projectId }: BuildInterfaceProps) {
-  // User input and generation state
-  const [prompt, setPrompt] = useState('')
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [generationComplete, setGenerationComplete] = useState(false)
-  const [overallProgress, setOverallProgress] = useState(0)
-  const [generationSteps, setGenerationSteps] = useState<GenerationStep[]>(defaultGenerationSteps)
-  const [currentStep, setCurrentStep] = useState('')
-  const [startTime, setStartTime] = useState<Date | undefined>(undefined)
-  const [estimatedEndTime, setEstimatedEndTime] = useState<Date | undefined>(undefined)
-  const [statusLogs, setStatusLogs] = useState<StatusLog[]>([])
-  const promptInputRef = useRef<HTMLTextAreaElement>(null)
-  
-  // Simulated files for the preview (will be replaced with actual generated files)
-  const [files, setFiles] = useState<any[]>([])
-  
-  // Adjust text area height based on content
-  useEffect(() => {
-    const textarea = promptInputRef.current
-    if (!textarea) return
-    
-    textarea.style.height = 'auto'
-    textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`
-  }, [prompt])
-  
-  // Handle textarea input change
-  const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPrompt(e.target.value)
-  }
-  
-  // Handle keyboard shortcuts
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Submit on Ctrl+Enter or Command+Enter
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-      e.preventDefault()
-      handleSubmit(e)
-    }
-  }
-  
-  // Submit prompt and start generation
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!prompt.trim() || isGenerating) return
-    
-    // Start generation
-    setIsGenerating(true)
-    setGenerationComplete(false)
-    setOverallProgress(0)
-    setCurrentStep('analysis')
-    setGenerationSteps(prevSteps => 
-      prevSteps.map(step => ({
-        ...step,
-        status: step.id === 'analysis' ? 'in-progress' : 'pending',
-        progress: step.id === 'analysis' ? 0 : undefined,
-        details: []
-      }))
-    )
-    
-    // Set start time and estimate end time (about 5 minutes from now)
-    const start = new Date()
-    setStartTime(start)
-    setEstimatedEndTime(new Date(start.getTime() + 5 * 60 * 1000))
-    
-    // Add initial log
-    addStatusLog('command', `Generating app from prompt: "${prompt}"`)
-    
-    // Simulate API call to backend
-    simulateGeneration()
-  }
-  
-  // Helper to add a log entry
-  const addStatusLog = (level: 'info' | 'success' | 'warning' | 'error' | 'command', message: string, details?: string) => {
-    setStatusLogs(prev => [
-      ...prev,
-      {
-        id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+interface ProjectData { // From create API
+  id: string;
+  name: string;
+  status?: string;
+}
+
+// This interface represents the expected structure from the backend's `structure` field
+// or a dedicated steps array in the status response.
+interface BackendStepInfo {
+  id: string; // Must match a defaultGenerationSteps id
+  name?: string; // Optional: Backend can override title
+  status: 'pending' | 'in-progress' | 'completed' | 'failed'; // Backend might use 'failed'
+  progress?: number; // 0-100
+  details?: string[];
+}
+
+interface ProjectStatusInfo { // From status API
+  id: string;
+  name: string;
+  status: 'pending' | 'generating' | 'completed' | 'failed'; // Overall project status
+  prompt: string;
+  description?: string | null;
+  tech_stack?: any;
+  structure?: BackendStepInfo[] | any; // Detailed steps from backend
+  files?: string[] | null;
+  download_url?: string | null;
+  created_at: string;
+  updated_at: string;
+  current_generation_step?: string; // ID of the current step
+  generation_progress_overall?: number;
+  generation_log_entries?: StatusLog[]; // Logs specific to the overall process
+}
+
+
+export default function BuildInterface({ projectId: initialProjectId }: BuildInterfaceProps) {
+  const router = useRouter();
+  const [currentProjectId, setCurrentProjectId] = useState<string | undefined>(initialProjectId);
+
+  const [prompt, setPrompt] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationComplete, setGenerationComplete] = useState(false);
+  const [projectFailed, setProjectFailed] = useState(false);
+
+  const [overallProgress, setOverallProgress] = useState(0);
+  const [generationSteps, setGenerationSteps] = useState<GenerationStep[]>(defaultGenerationSteps);
+  const [currentStep, setCurrentStep] = useState('');
+  const [startTime, setStartTime] = useState<Date | undefined>(undefined);
+  const [estimatedEndTime, setEstimatedEndTime] = useState<Date | undefined>(undefined);
+
+  const [statusLogs, setStatusLogs] = useState<StatusLog[]>([]);
+  const promptInputRef = useRef<HTMLTextAreaElement>(null);
+
+  const [files, setFiles] = useState<any[]>([]);
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const eventSourceRef = useRef<EventSource | null>(null);
+
+  const addStatusLog = (level: 'info' | 'success' | 'warning' | 'error' | 'command', message: string, details?: string, logId?: string, timestamp?: Date) => {
+    setStatusLogs(prev => {
+      const newLog: StatusLog = {
+        id: logId || `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         level,
         message,
-        timestamp: new Date(),
+        timestamp: timestamp || new Date(),
         details
+      };
+      // Check if a log with the same ID already exists or if a very similar message was logged recently
+      if (prev.some(log => log.id === newLog.id ||
+        (log.message === newLog.message && Math.abs(new Date(log.timestamp).getTime() - newLog.timestamp.getTime()) < 2000))) {
+        return prev;
       }
-    ])
-  }
-  
-  // Simulate generation process (will be replaced with actual API calls)
-  const simulateGeneration = () => {
-    // Define the steps and their duration in ms (for simulation)
-    const simulationSteps = [
-      { id: 'analysis', duration: 5000 },
-      { id: 'planning', duration: 8000 },
-      { id: 'frontend', duration: 12000 },
-      { id: 'backend', duration: 10000 },
-      { id: 'database', duration: 6000 },
-      { id: 'packaging', duration: 4000 },
-      { id: 'testing', duration: 5000 }
-    ]
-    
-    let totalDuration = simulationSteps.reduce((acc, step) => acc + step.duration, 0)
-    let elapsedTime = 0
-    
-    // Details for each step (to add during simulation)
-    const stepDetails = {
-      'analysis': [
-        'Detected type: Task Management Application',
-        'Features identified: User Authentication, Kanban Board, Drag & Drop',
-        'Complexity: Medium',
-        'Estimated components: 15-20'
-      ],
-      'planning': [
-        'Designed application architecture',
-        'Mapped component hierarchy',
-        'Established database schema',
-        'Defined API endpoints',
-        'Created build configuration'
-      ],
-      'frontend': [
-        'Generated React components',
-        'Implemented auth pages',
-        'Created Kanban board UI',
-        'Added drag & drop functionality',
-        'Styled with Tailwind CSS',
-        'Set up state management'
-      ],
-      'backend': [
-        'Created Express server',
-        'Implemented authentication routes',
-        'Added task management endpoints',
-        'Set up middleware',
-        'Implemented input validation'
-      ],
-      'database': [
-        'Generated database models',
-        'Added migrations',
-        'Created seed data',
-        'Set up foreign key relationships'
-      ],
-      'packaging': [
-        'Bundling assets',
-        'Generating documentation',
-        'Creating deployment scripts',
-        'Preparing download package'
-      ],
-      'testing': [
-        'Running smoke tests',
-        'Validating functionality',
-        'Checking for errors',
-        'Finalized build'
-      ]
+      return [...prev, newLog].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+    });
+  };
+
+  const fetchAndUpdateStatus = async (projectIdToFetch: string) => {
+    if (!projectIdToFetch) return;
+
+    try {
+      const res = await fetch(`/api/projects/${projectIdToFetch}/status`);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed to fetch status: ${res.statusText} (${res.status})`);
+      }
+      const statusData = await res.json() as ProjectStatusInfo;
+
+      setPrompt(statusData.prompt || '');
+      setOverallProgress(statusData.generation_progress_overall || 0);
+      if(statusData.current_generation_step) setCurrentStep(statusData.current_generation_step);
+
+      if (statusData.structure && Array.isArray(statusData.structure)) {
+        const backendSteps = statusData.structure as BackendStepInfo[];
+        setGenerationSteps(defaultGenerationSteps.map(uiStep => {
+          const backendStep = backendSteps.find(bs => bs.id === uiStep.id);
+          if (backendStep) {
+            return {
+              ...uiStep,
+              title: backendStep.name || uiStep.title,
+              status: backendStep.status === 'failed' ? 'error' : backendStep.status,
+              progress: backendStep.progress,
+              details: backendStep.details || uiStep.details || [],
+            };
+          }
+          const currentBackendStepIndex = statusData.current_generation_step ? backendSteps.findIndex(bs => bs.id === statusData.current_generation_step) : -1;
+          const uiStepIndex = defaultGenerationSteps.findIndex(ds => ds.id === uiStep.id);
+
+          if (currentBackendStepIndex !== -1 && uiStepIndex < currentBackendStepIndex && uiStep.status !== 'completed') {
+             return {...uiStep, status: 'completed', progress: 100};
+          }
+          return uiStep;
+        }));
+      } else if (statusData.current_generation_step) {
+         setGenerationSteps(prevSteps => prevSteps.map(step => {
+            const isCurrent = step.id === statusData.current_generation_step;
+            const currentStepIndexInDefault = defaultGenerationSteps.findIndex(s => s.id === statusData.current_generation_step);
+            const stepIndexInDefault = defaultGenerationSteps.findIndex(s => s.id === step.id);
+            let newStatus = step.status;
+
+            if (isCurrent) {
+                newStatus = 'in-progress';
+            } else if (currentStepIndexInDefault > -1 && stepIndexInDefault < currentStepIndexInDefault) {
+                newStatus = 'completed';
+            } else {
+                newStatus = 'pending';
+            }
+            return {...step, status: newStatus, progress: newStatus === 'completed' ? 100 : (isCurrent ? step.progress : undefined) };
+         }));
+      }
+
+      // Logs are now handled by SSE, but we might still get initial logs here
+      // or if SSE fails. So, keep this logic but ensure addStatusLog handles duplicates.
+      if (statusData.generation_log_entries && statusData.generation_log_entries.length > 0) {
+        statusData.generation_log_entries.forEach(log => {
+          addStatusLog(log.level, log.message, log.details, log.id, new Date(log.timestamp));
+        });
+      }
+
+      if (statusData.files && statusData.files.length > 0) {
+        setFiles(statusData.files.map(f => ({ path: f, content: `// Content for ${f} (placeholder)`, type: 'file' })));
+      }
+      setDownloadUrl(statusData.download_url || null);
+
+      if (statusData.status === 'completed') {
+        setIsGenerating(false);
+        setGenerationComplete(true);
+        setProjectFailed(false);
+        setOverallProgress(100);
+        addStatusLog('success', `App generation complete for ${statusData.name}!`);
+        if (pollingIntervalRef.current) clearInterval(pollingIntervalRef.current);
+        if (eventSourceRef.current) eventSourceRef.current.close();
+      } else if (statusData.status === 'failed') {
+        setIsGenerating(false);
+        setGenerationComplete(true);
+        setProjectFailed(true);
+        addStatusLog('error', `App generation failed for ${statusData.name}. Check logs for details.`);
+        if (pollingIntervalRef.current) clearInterval(pollingIntervalRef.current);
+        if (eventSourceRef.current) eventSourceRef.current.close();
+      } else if (statusData.status === 'generating') {
+        setIsGenerating(true);
+        setGenerationComplete(false);
+        setProjectFailed(false);
+      } else if (statusData.status === 'pending') {
+        setIsGenerating(false);
+        setGenerationComplete(false);
+        setProjectFailed(false);
+      }
+
+    } catch (error) {
+      console.error('Error fetching project status:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error fetching status.';
+      addStatusLog('error', `Status fetch error: ${errorMessage}`);
     }
-    
-    // Process details
-    const processDetails = (step: string, isStart: boolean = true) => {
-      if (isStart) {
-        addStatusLog('info', `Starting ${step} phase`)
-      }
-      
-      // Add some of the details as the step progresses
-      if (stepDetails[step as keyof typeof stepDetails]) {
-        const details = stepDetails[step as keyof typeof stepDetails]
-        
-        if (details && details.length > 0) {
-          const detailsToAdd = Math.min(details.length, 2)
-          
-          // Update generation steps with details
-          setGenerationSteps(prev => 
-            prev.map(s => 
-              s.id === step 
-                ? {
-                    ...s,
-                    details: [
-                      ...(s.details || []),
-                      ...details.slice(0, detailsToAdd)
-                    ]
-                  }
-                : s
-            )
-          )
-          
-          // Add logs for details
-          details.slice(0, detailsToAdd).forEach(detail => {
-            addStatusLog('info', detail)
-          })
-          
-          // Remove used details
-          stepDetails[step as keyof typeof stepDetails] = details.slice(detailsToAdd)
-        }
-      }
+  };
+
+  useEffect(() => {
+    if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = null;
     }
-    
-    // Function to process each step
-    const processStep = (index: number) => {
-      if (index >= simulationSteps.length) {
-        // All steps complete
-        setIsGenerating(false)
-        setGenerationComplete(true)
-        setOverallProgress(100)
-        addStatusLog('success', 'App generation complete! Ready for download.')
-        
-        // Simulate generated files for preview
-        setFiles([
-          {
-            path: 'README.md',
-            content: '# Task Management App\n\nA Kanban-style task management application with drag & drop functionality and user authentication.\n\n## Features\n\n- User authentication\n- Kanban board with drag & drop\n- Task categories\n- Task assignment\n- Due dates\n- Task filtering\n',
-            type: 'file'
-          },
-          {
-            path: 'package.json',
-            content: '{\n  "name": "task-management-app",\n  "version": "1.0.0",\n  "description": "A Kanban-style task management application",\n  "main": "index.js",\n  "scripts": {\n    "start": "node server/index.js",\n    "dev": "nodemon server/index.js",\n    "client": "cd client && npm start",\n    "build": "cd client && npm run build"\n  },\n  "dependencies": {\n    "express": "^4.17.1",\n    "mongoose": "^6.0.12",\n    "jsonwebtoken": "^8.5.1",\n    "bcryptjs": "^2.4.3",\n    "cors": "^2.8.5"\n  }\n}',
-            type: 'file'
-          },
-          {
-            path: 'client/src/App.js',
-            content: 'import React from "react";\nimport { BrowserRouter, Routes, Route } from "react-router-dom";\nimport { AuthProvider } from "./contexts/AuthContext";\nimport Login from "./pages/Login";\nimport Register from "./pages/Register";\nimport Dashboard from "./pages/Dashboard";\nimport KanbanBoard from "./pages/KanbanBoard";\nimport PrivateRoute from "./components/PrivateRoute";\n\nfunction App() {\n  return (\n    <BrowserRouter>\n      <AuthProvider>\n        <Routes>\n          <Route path="/login" element={<Login />} />\n          <Route path="/register" element={<Register />} />\n          <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />\n          <Route path="/board" element={<PrivateRoute><KanbanBoard /></PrivateRoute>} />\n        </Routes>\n      </AuthProvider>\n    </BrowserRouter>\n  );\n}\n\nexport default App;',
-            type: 'file'
-          },
-          {
-            path: 'client/src/pages/KanbanBoard.js',
-            content: 'import React, { useState, useEffect } from "react";\nimport { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";\nimport TaskCard from "../components/TaskCard";\nimport AddTaskForm from "../components/AddTaskForm";\nimport { useAuth } from "../contexts/AuthContext";\nimport axios from "axios";\n\nconst KanbanBoard = () => {\n  const [columns, setColumns] = useState({\n    "todo": { id: "todo", title: "To Do", tasks: [] },\n    "inProgress": { id: "inProgress", title: "In Progress", tasks: [] },\n    "review": { id: "review", title: "Review", tasks: [] },\n    "done": { id: "done", title: "Done", tasks: [] }\n  });\n  const { currentUser } = useAuth();\n\n  useEffect(() => {\n    // Fetch tasks from API\n    const fetchTasks = async () => {\n      try {\n        const res = await axios.get("/api/tasks", {\n          headers: { Authorization: `Bearer ${currentUser.token}` }\n        });\n        \n        // Group tasks by status\n        const newColumns = { ...columns };\n        res.data.forEach(task => {\n          if (newColumns[task.status]) {\n            newColumns[task.status].tasks.push(task);\n          }\n        });\n        \n        setColumns(newColumns);\n      } catch (err) {\n        console.error("Error fetching tasks:", err);\n      }\n    };\n    \n    fetchTasks();\n  }, [currentUser]);\n\n  const handleDragEnd = async (result) => {\n    const { source, destination, draggableId } = result;\n    \n    // Dropped outside a droppable area\n    if (!destination) return;\n    \n    // Dropped in the same place\n    if (\n      destination.droppableId === source.droppableId &&\n      destination.index === source.index\n    ) return;\n    \n    // Moving within the same column\n    if (source.droppableId === destination.droppableId) {\n      const column = columns[source.droppableId];\n      const newTasks = Array.from(column.tasks);\n      const [movedTask] = newTasks.splice(source.index, 1);\n      newTasks.splice(destination.index, 0, movedTask);\n      \n      setColumns({\n        ...columns,\n        [source.droppableId]: {\n          ...column,\n          tasks: newTasks\n        }\n      });\n    } \n    // Moving to a different column\n    else {\n      const sourceColumn = columns[source.droppableId];\n      const destColumn = columns[destination.droppableId];\n      const sourceTasks = Array.from(sourceColumn.tasks);\n      const destTasks = Array.from(destColumn.tasks);\n      const [movedTask] = sourceTasks.splice(source.index, 1);\n      \n      // Update task status\n      movedTask.status = destination.droppableId;\n      destTasks.splice(destination.index, 0, movedTask);\n      \n      setColumns({\n        ...columns,\n        [source.droppableId]: {\n          ...sourceColumn,\n          tasks: sourceTasks\n        },\n        [destination.droppableId]: {\n          ...destColumn,\n          tasks: destTasks\n        }\n      });\n      \n      // Update task in database\n      try {\n        await axios.patch(`/api/tasks/${draggableId}`, {\n          status: destination.droppableId\n        }, {\n          headers: { Authorization: `Bearer ${currentUser.token}` }\n        });\n      } catch (err) {\n        console.error("Error updating task:", err);\n      }\n    }\n  };\n\n  return (\n    <div className="p-6">\n      <h1 className="text-2xl font-bold mb-6">Kanban Board</h1>\n      <AddTaskForm />\n      \n      <DragDropContext onDragEnd={handleDragEnd}>\n        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">\n          {Object.values(columns).map(column => (\n            <div key={column.id} className="bg-gray-100 rounded-lg p-4">\n              <h2 className="font-semibold mb-3">{column.title}</h2>\n              <Droppable droppableId={column.id}>\n                {(provided) => (\n                  <div\n                    ref={provided.innerRef}\n                    {...provided.droppableProps}\n                    className="min-h-[200px]"\n                  >\n                    {column.tasks.map((task, index) => (\n                      <Draggable key={task._id} draggableId={task._id} index={index}>\n                        {(provided) => (\n                          <div\n                            ref={provided.innerRef}\n                            {...provided.draggableProps}\n                            {...provided.dragHandleProps}\n                          >\n                            <TaskCard task={task} />\n                          </div>\n                        )}\n                      </Draggable>\n                    ))}\n                    {provided.placeholder}\n                  </div>\n                )}\n              </Droppable>\n            </div>\n          ))}\n        </div>\n      </DragDropContext>\n    </div>\n  );\n};\n\nexport default KanbanBoard;',
-            type: 'file'
-          },
-          {
-            path: 'server/index.js',
-            content: 'const express = require("express");\nconst mongoose = require("mongoose");\nconst cors = require("cors");\nconst path = require("path");\nconst authRoutes = require("./routes/auth");\nconst taskRoutes = require("./routes/tasks");\nconst { authenticateToken } = require("./middleware/auth");\n\nrequire("dotenv").config();\n\nconst app = express();\nconst PORT = process.env.PORT || 5000;\n\n// Middleware\napp.use(cors());\napp.use(express.json());\n\n// Connect to MongoDB\nmongoose.connect(process.env.MONGODB_URI, {\n  useNewUrlParser: true,\n  useUnifiedTopology: true,\n})\n  .then(() => console.log("MongoDB connected"))\n  .catch(err => console.error("MongoDB connection error:", err));\n\n// Routes\napp.use("/api/auth", authRoutes);\napp.use("/api/tasks", authenticateToken, taskRoutes);\n\n// Serve static assets in production\nif (process.env.NODE_ENV === "production") {\n  app.use(express.static(path.join(__dirname, "../client/build")));\n  \n  app.get("*", (req, res) => {\n    res.sendFile(path.join(__dirname, "../client/build/index.html"));\n  });\n}\n\napp.listen(PORT, () => {\n  console.log(`Server running on port ${PORT}`);\n});\n',
-            type: 'file'
-          },
-          {
-            path: 'server/models/Task.js',
-            content: 'const mongoose = require("mongoose");\n\nconst TaskSchema = new mongoose.Schema({\n  title: {\n    type: String,\n    required: true,\n    trim: true\n  },\n  description: {\n    type: String,\n    trim: true\n  },\n  status: {\n    type: String,\n    enum: ["todo", "inProgress", "review", "done"],\n    default: "todo"\n  },\n  priority: {\n    type: String,\n    enum: ["low", "medium", "high"],\n    default: "medium"\n  },\n  dueDate: {\n    type: Date\n  },\n  assignedTo: {\n    type: mongoose.Schema.Types.ObjectId,\n    ref: "User"\n  },\n  createdBy: {\n    type: mongoose.Schema.Types.ObjectId,\n    ref: "User",\n    required: true\n  },\n  createdAt: {\n    type: Date,\n    default: Date.now\n  },\n  updatedAt: {\n    type: Date,\n    default: Date.now\n  }\n});\n\nmodule.exports = mongoose.model("Task", TaskSchema);',
-            type: 'file'
-          },
-          {
-            path: 'server/models/User.js',
-            content: 'const mongoose = require("mongoose");\nconst bcrypt = require("bcryptjs");\n\nconst UserSchema = new mongoose.Schema({\n  name: {\n    type: String,\n    required: true,\n    trim: true\n  },\n  email: {\n    type: String,\n    required: true,\n    unique: true,\n    trim: true,\n    lowercase: true\n  },\n  password: {\n    type: String,\n    required: true,\n    minlength: 6\n  },\n  role: {\n    type: String,\n    enum: ["user", "admin"],\n    default: "user"\n  },\n  createdAt: {\n    type: Date,\n    default: Date.now\n  }\n});\n\n// Hash password before saving\nUserSchema.pre("save", async function(next) {\n  if (!this.isModified("password")) return next();\n  \n  try {\n    const salt = await bcrypt.genSalt(10);\n    this.password = await bcrypt.hash(this.password, salt);\n    next();\n  } catch (err) {\n    next(err);\n  }\n});\n\n// Method to compare passwords\nUserSchema.methods.comparePassword = async function(candidatePassword) {\n  return bcrypt.compare(candidatePassword, this.password);\n};\n\nmodule.exports = mongoose.model("User", UserSchema);',
-            type: 'file'
-          },
-        ])
-        
-        return
-      }
-      
-      // Current step
-      const step = simulationSteps[index]
-      
-      // Mark current step as in progress, previous steps as completed
-      setGenerationSteps(prev => 
-        prev.map(s => ({
-          ...s,
-          status: 
-            s.id === step.id ? 'in-progress' : 
-            index > 0 && simulationSteps.findIndex(sim => sim.id === s.id) < index ? 'completed' :
-            'pending',
-          progress: s.id === step.id ? 0 : undefined
-        }))
-      )
-      
-      setCurrentStep(step.id)
-      
-      // Process details at start
-      processDetails(step.id)
-      
-      // Simulate progress
-      const intervalTime = 100 // Update every 100ms
-      const stepProgress = intervalTime / step.duration * 100
-      const overallStepProgress = step.duration / totalDuration * 100
-      
-      let currentProgress = 0
-      
-      const progressInterval = setInterval(() => {
-        currentProgress += stepProgress
-        
-        // Update the step progress
-        setGenerationSteps(prev => 
-          prev.map(s => 
-            s.id === step.id 
-              ? {
-                  ...s,
-                  progress: Math.min(Math.round(currentProgress), 100)
-                }
-              : s
-          )
-        )
-        
-        // Add some more details as the step progresses
-        if (currentProgress >= 50 && stepDetails[step.id as keyof typeof stepDetails]?.length > 0) {
-          processDetails(step.id, false)
-        }
-        
-        // Update overall progress
-        const overallProgressIncrement = stepProgress / 100 * overallStepProgress
-        elapsedTime += intervalTime
-        
-        setOverallProgress(prev => {
-          const base = (index / simulationSteps.length) * 100
-          const current = (currentProgress / 100) * (overallStepProgress)
-          return Math.min(Math.round(base + current), 100)
-        })
-        
-        if (currentProgress >= 100) {
-          clearInterval(progressInterval)
-          
-          // Add completion log
-          addStatusLog('success', `Completed ${step.id} phase`)
-          
-          // Move to next step
-          setTimeout(() => {
-            processStep(index + 1)
-          }, 100) // Small delay between steps for visual feedback
-        }
-      }, intervalTime)
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+      eventSourceRef.current = null;
     }
-    
-    // Start the first step
-    processStep(0)
-  }
-  
-  // Handle download button click
+    setCurrentProjectId(initialProjectId);
+
+    if (initialProjectId) {
+      setStatusLogs([]); // Clear logs for new/reloaded project
+      addStatusLog('info', `Loading project: ${initialProjectId}`);
+      setOverallProgress(0);
+      setGenerationSteps(defaultGenerationSteps.map(s => ({...s, status: 'pending', progress: undefined, details: [] })));
+      setFiles([]);
+      setDownloadUrl(null);
+      setProjectFailed(false);
+      setIsGenerating(true);
+      setGenerationComplete(false);
+      fetchAndUpdateStatus(initialProjectId); // Initial fetch for overall status
+    } else {
+      // Reset state if no project ID (e.g., navigating to /build directly)
+      setPrompt('');
+      setIsGenerating(false);
+      setGenerationComplete(false);
+      setProjectFailed(false);
+      setOverallProgress(0);
+      setGenerationSteps(defaultGenerationSteps.map(s => ({...s, status: 'pending', progress: undefined, details: [] })));
+      setCurrentStep('');
+      setStartTime(undefined);
+      setEstimatedEndTime(undefined);
+      setStatusLogs([]);
+      setFiles([]);
+      setDownloadUrl(null);
+    }
+  }, [initialProjectId]);
+
+  // Effect for managing polling and SSE connection
+  useEffect(() => {
+    // Cleanup function
+    const cleanup = () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = null;
+      }
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
+    };
+
+    if (currentProjectId && isGenerating && !generationComplete) {
+      // Start status polling
+      if (!pollingIntervalRef.current) {
+        pollingIntervalRef.current = setInterval(() => {
+          fetchAndUpdateStatus(currentProjectId);
+        }, 5000); // Poll for overall status, steps, files, download URL
+      }
+
+      // Start SSE for logs
+      if (!eventSourceRef.current) {
+        const es = new EventSource(`/api/projects/${currentProjectId}/logstream`);
+        eventSourceRef.current = es;
+
+        es.onopen = () => {
+          // console.log(`SSE connection opened for project ${currentProjectId}`);
+          // addStatusLog('info', 'Log stream connected.'); // Optional: log connection
+        };
+
+        es.addEventListener('log', (event) => {
+          try {
+            const logData = JSON.parse(event.data);
+            // Ensure logData has the expected structure (id, level, message, timestamp)
+            if (logData && logData.level && logData.message && logData.created_at) {
+               addStatusLog(
+                logData.level as StatusLog['level'],
+                logData.message,
+                logData.details,
+                logData.id.toString(), // SSE might send id as number
+                new Date(logData.created_at)
+              );
+            } else {
+              console.warn('Received malformed log event via SSE:', logData);
+            }
+          } catch (e) {
+            console.error('Error parsing SSE log event data:', e, event.data);
+            addStatusLog('error', 'Received unparseable log from stream.');
+          }
+        });
+
+        es.onerror = (error) => {
+          console.error('EventSource failed:', error);
+          addStatusLog('error', 'Log stream connection error. May fall back to polling for logs.');
+          es.close(); // Important to close on error to prevent multiple retries by browser
+          eventSourceRef.current = null; // Allow re-connection attempt if needed
+        };
+      }
+    } else {
+      cleanup(); // Stop polling and SSE if not generating or complete
+    }
+
+    return cleanup; // Cleanup on component unmount or when dependencies change
+  }, [currentProjectId, isGenerating, generationComplete]);
+
+  useEffect(() => {
+    const textarea = promptInputRef.current;
+    if (!textarea) return;
+    textarea.style.height = 'auto';
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 200)}px`;
+  }, [prompt]);
+
+  const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setPrompt(e.target.value);
+  };
+
+  const handleKeyDown = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      await handleSubmit(e);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!prompt.trim() || isGenerating) return;
+
+    setIsGenerating(true);
+    setGenerationComplete(false);
+    setProjectFailed(false);
+    setStatusLogs([]);
+    setOverallProgress(0);
+    setGenerationSteps(defaultGenerationSteps.map(step => ({ ...step, status: 'pending', progress: undefined, details: [] })));
+    setCurrentStep(defaultGenerationSteps[0]?.id || 'analysis');
+    setStartTime(new Date());
+    setEstimatedEndTime(new Date(Date.now() + 10 * 60 * 1000));
+    addStatusLog('command', `Initiating app generation for prompt: "${prompt}"`);
+
+    try {
+      const response = await fetch('/api/projects/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Failed to create project.' }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const newProject = await response.json() as ProjectData;
+      addStatusLog('success', `Project creation initiated. ID: ${newProject.id}. Name: ${newProject.name}`);
+      setCurrentProjectId(newProject.id);
+      router.push(`/build?projectId=${newProject.id}`, { scroll: false });
+    } catch (error) {
+      console.error('Failed to create project:', error);
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
+      addStatusLog('error', `Failed to start generation: ${errorMessage}`);
+      setIsGenerating(false);
+      setProjectFailed(true);
+    }
+  };
+
   const handleDownload = () => {
-    addStatusLog('info', 'Preparing download...')
+    if (projectFailed) {
+      addStatusLog('error', 'Project generation failed. Download not available.');
+      return;
+    }
+    if (generationComplete && downloadUrl) {
+      addStatusLog('info', `Redirecting to download: ${downloadUrl}`);
+      window.open(downloadUrl, '_blank');
+    } else if (isGenerating) {
+      addStatusLog('warning', 'Project is still generating. Please wait.');
+    } else {
+      addStatusLog('warning', 'Download URL not available or project not complete.');
+    }
+  };
+
+  const handleRegenerate = async () => {
+    if (!currentProjectId) return;
     
-    // Simulate download preparation
-    setTimeout(() => {
-      addStatusLog('success', 'Download ready!')
-      
-      // Create a fake download link (in a real app, this would point to the actual zip file)
-      const a = document.createElement('a')
-      a.href = '#'
-      a.download = 'task-management-app.zip'
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-    }, 1500)
-  }
+    setIsGenerating(true);
+    setGenerationComplete(false);
+    setProjectFailed(false);
+    setStatusLogs([]);
+    setOverallProgress(0);
+    setGenerationSteps(defaultGenerationSteps.map(step => ({ ...step, status: 'pending', progress: undefined, details: [] })));
+    setCurrentStep(defaultGenerationSteps[0]?.id || 'analysis');
+    setStartTime(new Date());
+    setEstimatedEndTime(new Date(Date.now() + 10 * 60 * 1000));
+    addStatusLog('command', `Initiating app regeneration for project ID: ${currentProjectId}`);
+
+    try {
+      const response = await fetch(`/api/projects/${currentProjectId}/regenerate`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Failed to regenerate project.' }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      addStatusLog('success', `Regeneration started for project ${currentProjectId}`);
+    } catch (error: any) {
+      console.error('Regeneration failed:', error);
+      addStatusLog('error', `Regeneration failed: ${error.message}`);
+      setIsGenerating(false);
+      setProjectFailed(true);
+    }
+  };
+
+  const handleCancel = async () => {
+    if (!currentProjectId || !isGenerating) return;
+    
+    addStatusLog('command', `Cancelling app generation for project ID: ${currentProjectId}`);
+    if (pollingIntervalRef.current) clearInterval(pollingIntervalRef.current);
+    if (eventSourceRef.current) eventSourceRef.current.close();
+
+    try {
+      const response = await fetch(`/api/projects/${currentProjectId}/cancel`, {
+        method: 'POST',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ message: 'Failed to cancel project.' }));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      addStatusLog('warning', `Generation cancelled for project ${currentProjectId}`);
+      setIsGenerating(false);
+      setProjectFailed(true);
+      setGenerationComplete(true);
+    } catch (error: any) {
+      console.error('Cancel failed:', error);
+      addStatusLog('error', `Cancel failed: ${error.message}`);
+      setIsGenerating(false);
+      setProjectFailed(true);
+      setGenerationComplete(true);
+    }
+  };
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 w-full">
@@ -363,11 +444,10 @@ export default function BuildInterface({ projectId }: BuildInterfaceProps) {
         <div className="border rounded-xl glassmorphism p-6 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-comfortaa font-bold">What would you like to build?</h2>
-            
-            {generationComplete && (
+            {(generationComplete || projectFailed) && (
               <div className="flex gap-2">
                 <button
-                  onClick={() => window.location.reload()}
+                  onClick={() => router.push('/build')}
                   className="flex items-center gap-1 px-3 py-1 text-sm rounded-lg border border-slateBlue text-slateBlue hover:bg-slateBlue hover:bg-opacity-10 transition-colors"
                 >
                   <RefreshCw className="w-4 h-4" />
@@ -376,7 +456,7 @@ export default function BuildInterface({ projectId }: BuildInterfaceProps) {
               </div>
             )}
           </div>
-          
+
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="relative">
               <textarea
@@ -386,21 +466,21 @@ export default function BuildInterface({ projectId }: BuildInterfaceProps) {
                 onKeyDown={handleKeyDown}
                 placeholder="Describe the app you want to build. For example: Build me a task management tool with login and drag-and-drop Kanban."
                 className="w-full h-24 min-h-[6rem] p-4 bg-richBlack bg-opacity-40 rounded-lg text-whiteSmoke placeholder-lightGray placeholder-opacity-50 focus:outline-none focus:ring-1 focus:ring-slateBlue resize-none"
-                disabled={isGenerating || generationComplete}
+                disabled={isGenerating || generationComplete || projectFailed}
               />
               <div className="absolute bottom-3 right-3 text-xs text-lightGray">
-                {prompt.length > 0 && (
+                {prompt.length > 0 && !isGenerating && !generationComplete && !projectFailed && (
                   <span>Press <kbd className="px-1 py-0.5 bg-berkeleyBlue rounded">Ctrl</kbd> + <kbd className="px-1 py-0.5 bg-berkeleyBlue rounded">Enter</kbd> to submit</span>
                 )}
               </div>
             </div>
-            
+
             <button
               type="submit"
-              disabled={!prompt.trim() || isGenerating || generationComplete}
+              disabled={!prompt.trim() || isGenerating || generationComplete || projectFailed}
               className={cn(
                 "px-6 py-3 rounded-xl font-comfortaa font-bold transition-all duration-300",
-                (!prompt.trim() || isGenerating || generationComplete)
+                (!prompt.trim() || isGenerating || generationComplete || projectFailed)
                   ? "bg-berkeleyBlue text-lightGray cursor-not-allowed"
                   : "button-primary hover:shadow-glow"
               )}
@@ -421,9 +501,8 @@ export default function BuildInterface({ projectId }: BuildInterfaceProps) {
             </button>
           </form>
         </div>
-        
-        {/* Generation Progress */}
-        {(isGenerating || generationComplete) && (
+
+        {(isGenerating || generationComplete || projectFailed) && (
           <div className="border rounded-xl glassmorphism p-6">
             <GenerationProgress
               steps={generationSteps}
@@ -434,34 +513,50 @@ export default function BuildInterface({ projectId }: BuildInterfaceProps) {
             />
           </div>
         )}
-        
-        {/* Status Logs */}
+
         {(statusLogs.length > 0) && (
           <div className="border rounded-xl glassmorphism p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-comfortaa font-bold">Generation Logs</h3>
-              {generationComplete && (
-                <button
-                  onClick={handleDownload}
-                  className="button-primary py-1 px-4 text-sm"
-                >
-                  <div className="flex items-center gap-1">
-                    <Download className="w-4 h-4" />
-                    <span>Download .zip</span>
-                  </div>
-                </button>
-              )}
+              <div className="flex items-center space-x-2">
+                {isGenerating && !generationComplete && (
+                  <button
+                    onClick={handleCancel}
+                    className="button-cancel py-1 px-3 text-sm flex items-center"
+                  >
+                    <XCircle className="w-4 h-4 mr-1" />
+                    Cancel
+                  </button>
+                )}
+                {projectFailed && currentProjectId && (
+                  <button
+                    onClick={handleRegenerate}
+                    className="button-secondary py-1 px-3 text-sm flex items-center"
+                  >
+                    <RefreshCw className="w-4 h-4 mr-1" />
+                    Regenerate
+                  </button>
+                )}
+                {generationComplete && !projectFailed && downloadUrl && (
+                  <button
+                    onClick={handleDownload}
+                    className="button-primary py-1 px-3 text-sm flex items-center"
+                  >
+                    <Download className="w-4 h-4 mr-1" />
+                    Download .zip
+                  </button>
+                )}
+              </div>
             </div>
             <StatusUpdate logs={statusLogs} maxHeight="300px" />
           </div>
         )}
       </div>
-      
+
       {/* Right Column - App Preview */}
       <div className="w-full lg:w-1/2">
         <div className="border rounded-xl glassmorphism p-6 h-full">
           <h3 className="text-lg font-comfortaa font-bold mb-4">App Preview</h3>
-          
           <div className="h-[calc(100%-2rem)]">
             {isGenerating && !generationComplete ? (
               <div className="w-full h-full flex items-center justify-center">
@@ -476,7 +571,23 @@ export default function BuildInterface({ projectId }: BuildInterfaceProps) {
                   </p>
                 </div>
               </div>
-            ) : !isGenerating && !generationComplete ? (
+            ) : currentProjectId && !projectFailed ? (
+              <AppPreview
+                projectId={currentProjectId}
+                files={files}
+                isLoading={isGenerating && !generationComplete}
+              />
+            ) : projectFailed ? (
+                 <div className="w-full h-full flex items-center justify-center">
+                <div className="flex flex-col items-center space-y-4 text-center">
+                  <XCircle className="w-12 h-12 text-red-500 opacity-80" />
+                  <p className="text-whiteSmoke text-lg">Generation Failed</p>
+                  <p className="text-lightGray text-sm max-w-md">
+                    Something went wrong during generation. Check the logs or try regenerating.
+                  </p>
+                </div>
+              </div>
+            ) : (
               <div className="w-full h-full flex items-center justify-center">
                 <div className="flex flex-col items-center space-y-4 text-center">
                   <Zap className="w-12 h-12 text-slateBlue opacity-60" />
@@ -486,16 +597,10 @@ export default function BuildInterface({ projectId }: BuildInterfaceProps) {
                   </p>
                 </div>
               </div>
-            ) : (
-              <AppPreview
-                projectId="example-project"
-                files={files}
-                isLoading={false}
-              />
             )}
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

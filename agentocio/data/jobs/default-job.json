@@ -1,0 +1,18 @@
+{
+  "id": "default-job-template",
+  "title": "Default Job",
+  "description": "A default job template",
+  "status": "available",
+  "createdAt": "2025-05-07T12:00:00Z",
+  "priority": "medium",
+  "tags": ["default", "template"],
+  "requirements": {
+    "skills": ["general"],
+    "experience": "entry-level"
+  },
+  "details": {
+    "instructions": "This is a default job template. Replace with actual instructions.",
+    "expectedOutcome": "Completed task according to specifications.",
+    "timeline": "24 hours"
+  }
+}

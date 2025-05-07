@@ -9,7 +9,7 @@ import { ApiError } from '@/lib/utils/api-error'
 export const GET = withErrorHandling(
   withRateLimit(async (
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: { projectId: string } } // Changed id to projectId
   ) => {
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
@@ -20,7 +20,7 @@ export const GET = withErrorHandling(
       throw ApiError.unauthorized('Authentication required')
     }
     
-    const projectId = params.id
+    const projectId = params.projectId // Changed params.id to params.projectId
     
     // Get project
     const { data: project, error } = await supabase
@@ -54,7 +54,7 @@ export const GET = withErrorHandling(
 export const PUT = withErrorHandling(
   withRateLimit(async (
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: { projectId: string } } // Changed id to projectId
   ) => {
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
@@ -65,7 +65,7 @@ export const PUT = withErrorHandling(
       throw ApiError.unauthorized('Authentication required')
     }
     
-    const projectId = params.id
+    const projectId = params.projectId // Changed params.id to params.projectId
     
     // Check if project exists and belongs to user
     const { data: existingProject, error: fetchError } = await supabase
@@ -133,7 +133,7 @@ export const PUT = withErrorHandling(
 export const DELETE = withErrorHandling(
   withRateLimit(async (
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: { projectId: string } } // Changed id to projectId
   ) => {
     const cookieStore = cookies()
     const supabase = createClient(cookieStore)
@@ -144,7 +144,7 @@ export const DELETE = withErrorHandling(
       throw ApiError.unauthorized('Authentication required')
     }
     
-    const projectId = params.id
+    const projectId = params.projectId // Changed params.id to params.projectId
     
     // Check if project exists and belongs to user
     const { data: existingProject, error: fetchError } = await supabase
@@ -177,6 +177,20 @@ export const DELETE = withErrorHandling(
       await supabase.storage
         .from('project-files')
         .remove(filePaths)
+    }
+     // Delete source files from storage
+    const { data: sourceFiles } = await supabase.storage
+      .from('project-files')
+      .list(`project-source-files/${projectId}`)
+
+    if (sourceFiles && sourceFiles.length > 0) {
+      const sourceFilePaths = sourceFiles.map(file => `project-source-files/${projectId}/${file.name}`)
+      // Need to recursively delete if there are folders, but for now assume flat structure or delete folder directly
+      // For simplicity, if files exist, attempt to remove them.
+      // A more robust solution would list all files recursively.
+      await supabase.storage
+        .from('project-files')
+        .remove(sourceFilePaths)
     }
     
     // Delete project record

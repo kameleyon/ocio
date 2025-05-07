@@ -12,40 +12,43 @@ export interface Database {
       projects: {
         Row: {
           id: string
-          created_at: string
           user_id: string
           name: string
           description: string
           prompt: string
-          status: "pending" | "generating" | "completed" | "failed"
+          status: 'pending' | 'generating' | 'completed' | 'failed'
           tech_stack: Json
-          download_url: string | null
+          created_at: string
+          updated_at: string
+          download_url?: string
           structure?: Json
           files?: Json
         }
         Insert: {
           id?: string
-          created_at?: string
           user_id: string
           name: string
           description: string
           prompt: string
-          status?: "pending" | "generating" | "completed" | "failed"
-          tech_stack?: Json
-          download_url?: string | null
+          status: 'pending' | 'generating' | 'completed' | 'failed'
+          tech_stack: Json
+          created_at?: string
+          updated_at?: string
+          download_url?: string
           structure?: Json
           files?: Json
         }
         Update: {
           id?: string
-          created_at?: string
           user_id?: string
           name?: string
           description?: string
           prompt?: string
-          status?: "pending" | "generating" | "completed" | "failed"
+          status?: 'pending' | 'generating' | 'completed' | 'failed'
           tech_stack?: Json
-          download_url?: string | null
+          created_at?: string
+          updated_at?: string
+          download_url?: string
           structure?: Json
           files?: Json
         }
@@ -53,33 +56,59 @@ export interface Database {
       profiles: {
         Row: {
           id: string
+          email: string
+          full_name?: string
+          avatar_url?: string
           created_at: string
           updated_at: string
-          email: string
-          full_name: string | null
-          avatar_url: string | null
-          subscription_tier: "free" | "pro" | "enterprise" | null
+          subscription_tier: string
           generation_count: number
         }
         Insert: {
           id: string
+          email: string
+          full_name?: string
+          avatar_url?: string
           created_at?: string
           updated_at?: string
-          email: string
-          full_name?: string | null
-          avatar_url?: string | null
-          subscription_tier?: "free" | "pro" | "enterprise" | null
+          subscription_tier?: string
           generation_count?: number
         }
         Update: {
           id?: string
+          email?: string
+          full_name?: string
+          avatar_url?: string
           created_at?: string
           updated_at?: string
-          email?: string
-          full_name?: string | null
-          avatar_url?: string | null
-          subscription_tier?: "free" | "pro" | "enterprise" | null
+          subscription_tier?: string
           generation_count?: number
+        }
+      }
+      project_logs: {
+        Row: {
+          id: number
+          project_id: string
+          created_at: string
+          level: 'info' | 'error' | 'warning' | 'command' | 'debug' | 'success'
+          message: string
+          details?: Json
+        }
+        Insert: {
+          id?: number
+          project_id: string
+          created_at?: string
+          level: 'info' | 'error' | 'warning' | 'command' | 'debug' | 'success'
+          message: string
+          details?: Json
+        }
+        Update: {
+          id?: number
+          project_id?: string
+          created_at?: string
+          level?: 'info' | 'error' | 'warning' | 'command' | 'debug' | 'success'
+          message?: string
+          details?: Json
         }
       }
     }

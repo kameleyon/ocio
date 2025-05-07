@@ -21,7 +21,7 @@ export async function GET(
     }
     
     // Get project data
-    const projectService = new ProjectService()
+    const projectService = new ProjectService(supabase)
     const project = await projectService.getProjectById(projectId)
     
     // If project not found or does not belong to user, return 404
@@ -466,7 +466,7 @@ function generatePreviewHtml(project: any) {
               addButton.click();
             }
           });
-        });
+          });
       </script>
     </body>
     </html>

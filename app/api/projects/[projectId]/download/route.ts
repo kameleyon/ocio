@@ -10,7 +10,7 @@ export const GET = withErrorHandling(
   withRateLimit(
     async (
       request: NextRequest,
-      { params }: { params: { id: string } }
+      { params }: { params: { projectId: string } } // Changed id to projectId
     ) => {
       const supabase = createRouteHandlerClient()
       
@@ -20,7 +20,7 @@ export const GET = withErrorHandling(
         throw ApiError.unauthorized('Authentication required')
       }
       
-      const projectId = params.id
+      const projectId = params.projectId // Changed params.id to params.projectId
       
       // Check if project exists and belongs to user
       const { data: project, error: fetchError } = await supabase
@@ -60,7 +60,7 @@ export const GET = withErrorHandling(
       
       try {
         // Create project service
-        const projectService = new ProjectService()
+        const projectService = new ProjectService(supabase)
         
         // Get the files for the project
         const files = await projectService.getProjectFiles(projectId)
